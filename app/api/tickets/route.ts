@@ -13,7 +13,6 @@ export async function POST(request: NextRequest) {
     }
 
     const supabase = createAdminClient()
-
     const { data, error } = await supabase
       .from('tickets')
       .insert({
@@ -42,7 +41,8 @@ export async function POST(request: NextRequest) {
       clientMobile: data.client_mobile,
     })
 
-    return NextResponse.json({ ticket_number: data.ticket_number }, { status: 201 })
+    // Return both ticket_number (for display) and id (for photo upload)
+    return NextResponse.json({ ticket_number: data.ticket_number, ticket_id: data.id }, { status: 201 })
   } catch (e) {
     console.error('POST /api/tickets error:', e)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

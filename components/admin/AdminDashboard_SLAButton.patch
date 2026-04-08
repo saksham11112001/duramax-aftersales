@@ -1,0 +1,14 @@
+
+In AdminDashboard.tsx, add this import at the top:
+  import SLASettingsModal from '@/components/admin/SLASettingsModal'
+
+Add state:
+  const [showSLAModal, setShowSLAModal] = useState(false)
+
+In the chip filters row, add the button after the chips div:
+  <button onClick={() => setShowSLAModal(true)} style={{ background:'white', border:'1px solid var(--border)', borderRadius:7, padding:'5px 13px', fontSize:12, fontWeight:600, cursor:'pointer', color:'var(--muted)', display:'flex', alignItems:'center', gap:5, fontFamily:'inherit', flexShrink:0 }}>
+    ⏱ Edit SLAs
+  </button>
+
+At the bottom before the toast, add:
+  {showSLAModal && <SLASettingsModal onClose={() => setShowSLAModal(false)}/>}

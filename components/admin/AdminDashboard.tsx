@@ -9,6 +9,7 @@ import InvoiceModal from '@/components/admin/InvoiceModal'
 import AssignModal from '@/components/admin/AssignModal'
 import FeedbackPanel from '@/components/admin/FeedbackPanel'
 import LogoutButton from '@/components/shared/LogoutButton'
+import SLASettingsModal from '@/components/admin/SLASettingsModal'
 
 interface Props { initialTickets: Ticket[]; supervisors: Profile[]; userFullName: string }
 
@@ -46,6 +47,7 @@ export default function AdminDashboard({ initialTickets, supervisors, userFullNa
   const [invoiceModal, setInvoiceModal] = useState<{open:boolean;type:'visit_fee'|'spare_parts'}>({open:false,type:'visit_fee'})
   const [assignModal,  setAssignModal]  = useState(false)
   const [assignType,   setAssignType]   = useState<'supervisor'|'installer'>('supervisor')
+  const [showSLAModal, setShowSLAModal] = useState(false)
   const supabase = createClient()
 
   useEffect(() => {
@@ -199,12 +201,17 @@ export default function AdminDashboard({ initialTickets, supervisors, userFullNa
           {/* Left: chips + list */}
           <div style={{ gridColumn:'1/3' }}>
             <div style={{ display:'flex', gap:6, flexWrap:'wrap', marginBottom:12, alignItems:'center', justifyContent:'space-between' }}>
-              <div style={{ display:'flex', gap:5, flexWrap:'wrap' }}>
-                {CHIPS.map(c => (
-                  <button key={c.k} onClick={()=>setFilter(c.k)} style={{ background:filter===c.k?'var(--teal-l)':'white', border:`1px solid ${filter===c.k?'var(--teal)':'var(--border)'}`, borderRadius:7, padding:'5px 11px', fontSize:11.5, fontWeight:600, cursor:'pointer', color:filter===c.k?'var(--teal)':'var(--ink)', fontFamily:'inherit', transition:'all .16s' }}>
-                    {c.l} {c.k!=='feedback'?`(${c.k==='all'?tickets.length:tickets.filter(t=>t.status===c.k).length})`:''}{c.k==='feedback'?`(${stats.fb})`:''}
-                  </button>
-                ))}
+              <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', width:'100%', gap:8 }}>
+                <div style={{ display:'flex', gap:5, flexWrap:'wrap', flex:1 }}>
+                  {CHIPS.map(c => (
+                    <button key={c.k} onClick={()=>setFilter(c.k)} style={{ background:filter===c.k?'var(--teal-l)':'white', border:`1px solid ${filter===c.k?'var(--teal)':'var(--border)'}`, borderRadius:7, padding:'5px 11px', fontSize:11.5, fontWeight:600, cursor:'pointer', color:filter===c.k?'var(--teal)':'var(--ink)', fontFamily:'inherit', transition:'all .16s' }}>
+                      {c.l} {c.k!=='feedback'?`(${c.k==='all'?tickets.length:tickets.filter(t=>t.status===c.k).length})`:''}{c.k==='feedback'?`(${stats.fb})`:''}
+                    </button>
+                  ))}
+                </div>
+                <button onClick={()=>setShowSLAModal(true)} style={{ background:'white', border:'1px solid var(--border)', borderRadius:7, padding:'6px 13px', fontSize:12, fontWeight:600, cursor:'pointer', color:'var(--muted)', display:'flex', alignItems:'center', gap:5, fontFamily:'inherit', flexShrink:0, whiteSpace:'nowrap' }}>
+                  ⏱ Edit SLAs
+                </button>
               </div>
             </div>
 
@@ -250,6 +257,7 @@ export default function AdminDashboard({ initialTickets, supervisors, userFullNa
       {/* Modals */}
       {invoiceModal.open && sel && <InvoiceModal ticket={sel} type={invoiceModal.type} onConfirm={handleInvoice} onClose={()=>setInvoiceModal({open:false,type:'visit_fee'})} loading={modalLoading}/>}
       {assignModal && sel && <AssignModal ticket={sel} supervisors={supervisors} assignType={assignType} onConfirm={handleAssign} onClose={()=>setAssignModal(false)} loading={modalLoading}/>}
+      {showSLAModal && <SLASettingsModal onClose={()=>setShowSLAModal(false)}/>}
 
       {toast && (
         <div style={{ position:'fixed', bottom:22, right:22, background:toastOk?'var(--ink)':'var(--coral)', color:'white', fontSize:13, fontWeight:600, padding:'10px 18px', borderRadius:9, boxShadow:'var(--sh-lg)', zIndex:999 }}>
