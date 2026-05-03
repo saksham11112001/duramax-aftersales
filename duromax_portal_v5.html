@@ -1,0 +1,1400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Duromax Building Systems Pvt Ltd Aluminium Doors/Windows/Facade — Service Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --teal:#0C6E58;--teal-d:#085040;--teal-l:#E2F4EE;--teal-m:#1D9E75;
+  --gold:#9A6800;--gold-l:#FDF3E0;--gold-m:#E9A825;
+  --coral:#C44B2B;--coral-l:#FCEEE9;
+  --blue:#1A5EA8;--blue-l:#E8F0FB;
+  --purple:#4B3FAA;--purple-l:#EEEDFE;
+  --ink:#1A1A18;--muted:#6B6A64;--border:#E4E2D8;
+  --bg:#F7F6F2;--white:#FFFFFF;
+  --sh:0 1px 3px rgba(0,0,0,.06),0 4px 14px rgba(0,0,0,.05);
+  --sh-lg:0 8px 32px rgba(0,0,0,.13);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--teal);height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;position:sticky;top:0;z-index:300;box-shadow:0 2px 10px rgba(0,0,0,.15);}
+.logo{font-family:'DM Serif Display',serif;font-size:20px;color:#fff;display:flex;align-items:center;gap:8px;}
+.logo-tag{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);color:rgba(255,255,255,.75);font-family:'DM Sans',sans-serif;font-size:10px;font-weight:600;padding:2px 9px;border-radius:20px;letter-spacing:.08em;text-transform:uppercase;}
+.role-bar{display:flex;background:rgba(0,0,0,.2);border-radius:8px;padding:3px;gap:2px;}
+.rtab{padding:5px 15px;border:none;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;cursor:pointer;color:rgba(255,255,255,.5);background:transparent;letter-spacing:.06em;text-transform:uppercase;transition:all .18s;}
+.rtab.on{background:#fff;color:var(--teal);}
+
+/* ── VIEWS ── */
+.view{display:none;padding:28px 32px 60px;max-width:1120px;margin:0 auto;}
+.view.on{display:block;}
+.pg-h{font-family:'DM Serif Display',serif;font-size:26px;margin-bottom:3px;}
+.pg-s{font-size:12.5px;color:var(--muted);margin-bottom:24px;}
+
+/* ── PROGRESS STRIP ── */
+.prog{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:22px;box-shadow:var(--sh);}
+.prog-lbl{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
+.prog-steps{display:flex;align-items:flex-start;}
+.ps{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;position:relative;}
+.ps:not(:last-child)::after{content:'';position:absolute;top:11px;left:50%;width:100%;height:2px;background:var(--border);z-index:0;transition:background .35s;}
+.ps.done:not(:last-child)::after{background:var(--teal);}
+.ps-dot{width:22px;height:22px;border-radius:50%;border:2px solid var(--border);background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--muted);position:relative;z-index:1;transition:all .28s;}
+.ps.done .ps-dot{background:var(--teal);border-color:var(--teal);color:#fff;}
+.ps.active .ps-dot{background:var(--coral);border-color:var(--coral);color:#fff;box-shadow:0 0 0 4px rgba(196,75,43,.15);}
+.ps-lbl{font-size:8px;font-weight:500;color:var(--muted);text-align:center;line-height:1.3;max-width:54px;}
+.ps.active .ps-lbl{color:var(--coral);font-weight:700;}
+.ps.done .ps-lbl{color:var(--teal);}
+
+/* ── CARDS ── */
+.card{background:var(--white);border:1px solid var(--border);border-radius:13px;padding:22px;box-shadow:var(--sh);margin-bottom:16px;}
+.ct{font-family:'DM Serif Display',serif;font-size:17px;margin-bottom:13px;}
+
+/* ── FORMS ── */
+.fg{display:flex;flex-direction:column;gap:4px;margin-bottom:11px;}
+.fg2{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+.fg2 .fg{margin-bottom:0;}
+.fg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px;}
+.fg3 .fg{margin-bottom:0;}
+.lbl{font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);}
+input,textarea,select{font-family:'DM Sans',sans-serif;font-size:13px;padding:8px 11px;border:1.5px solid var(--border);border-radius:7px;background:var(--bg);color:var(--ink);outline:none;transition:border-color .18s;width:100%;}
+input:focus,textarea:focus,select:focus{border-color:var(--teal);background:#fff;}
+textarea{resize:vertical;min-height:68px;}
+.radio-row{display:flex;gap:8px;flex-wrap:wrap;}
+.ropt{display:flex;align-items:center;gap:6px;padding:7px 12px;border:1.5px solid var(--border);border-radius:7px;cursor:pointer;font-size:12.5px;font-weight:500;background:var(--bg);transition:all .16s;}
+.ropt.sel{border-color:var(--teal);background:var(--teal-l);color:var(--teal);}
+.ropt input{width:auto;border:none;background:transparent;padding:0;}
+
+/* ── BUTTONS ── */
+.btn{padding:9px 18px;border-radius:7px;border:none;font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:700;cursor:pointer;transition:all .16s;display:inline-flex;align-items:center;gap:5px;letter-spacing:.01em;}
+.btn-teal{background:var(--teal);color:#fff;}
+.btn-teal:hover{background:var(--teal-d);}
+.btn-coral{background:var(--coral);color:#fff;}
+.btn-coral:hover{background:#a0381e;}
+.btn-gold{background:var(--gold-m);color:#fff;}
+.btn-gold:hover{background:#c88710;}
+.btn-blue{background:var(--blue);color:#fff;}
+.btn-outline{background:transparent;color:var(--ink);border:1.5px solid var(--border);}
+.btn-outline:hover{border-color:var(--ink);}
+.btn-sm{padding:6px 13px;font-size:11.5px;}
+.btn-danger{background:#DC2626;color:#fff;}
+.btns{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;flex-wrap:wrap;}
+
+/* ── BADGES ── */
+.bdg{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:20px;font-size:10.5px;font-weight:700;}
+.bdg-amber{background:var(--gold-l);color:var(--gold);}
+.bdg-teal{background:var(--teal-l);color:var(--teal);}
+.bdg-coral{background:var(--coral-l);color:var(--coral);}
+.bdg-blue{background:var(--blue-l);color:var(--blue);}
+.bdg-purple{background:var(--purple-l);color:var(--purple);}
+.bdg-red{background:#FEE2E2;color:#DC2626;}
+.bdg-gray{background:#F1EFE8;color:var(--muted);}
+
+/* ── WA ── */
+.wa{background:#E7F7EF;border:1px solid #A8DFC0;border-radius:10px;padding:11px 14px;display:flex;gap:9px;margin-top:10px;}
+.wa-b{font-size:12px;color:#1A4A2A;line-height:1.5;}
+.wa-b strong{display:block;font-weight:700;margin-bottom:1px;}
+
+/* ── INVOICE BLOCK ── */
+.inv{background:var(--bg);border:1px solid var(--border);border-radius:9px;padding:14px 16px;margin:12px 0;}
+.inv-row{display:flex;justify-content:space-between;font-size:12.5px;padding:4px 0;border-bottom:1px dashed var(--border);}
+.inv-row:last-child{border:none;font-weight:700;font-size:14.5px;padding-top:9px;}
+.inv-hdr{background:var(--teal);color:#fff;border-radius:7px 7px 0 0;padding:9px 16px;display:flex;justify-content:space-between;align-items:center;margin:-14px -16px 12px;}
+.inv-hdr .inv-title{font-family:'DM Serif Display',serif;font-size:14px;}
+.inv-hdr .inv-num{font-size:11px;opacity:.75;}
+
+/* ── PERSON CARD ── */
+.pcard{display:flex;align-items:center;gap:12px;background:var(--bg);border-radius:9px;padding:12px;margin-top:9px;border:1px solid var(--border);}
+.av{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:18px;color:#fff;flex-shrink:0;}
+.pname{font-weight:700;font-size:13.5px;}
+.psub{font-size:11px;color:var(--muted);margin-top:2px;}
+
+/* ── PARTS TABLE ── */
+.ptbl{width:100%;border-collapse:collapse;font-size:12.5px;margin:8px 0;}
+.ptbl th{text-align:left;padding:6px 10px;font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border-bottom:1.5px solid var(--border);background:var(--bg);}
+.ptbl td{padding:7px 10px;border-bottom:1px dashed var(--border);}
+.ptbl tr:last-child td{border:none;}
+.ptbl-input{border:none;background:transparent;padding:0;font-size:12.5px;width:100%;}
+.ptbl-input:focus{outline:none;border-bottom:1px solid var(--teal);}
+
+/* ── SLA BAR ── */
+.sla-w{background:var(--bg);border-radius:8px;padding:9px 12px;margin-top:8px;border:1px solid var(--border);}
+.sla-lbl{display:flex;justify-content:space-between;font-size:10.5px;font-weight:600;color:var(--muted);margin-bottom:4px;}
+.sla-bar{height:6px;background:var(--border);border-radius:10px;overflow:hidden;}
+.sla-fill{height:100%;border-radius:10px;transition:width .4s;}
+
+/* ── SIGN BOX ── */
+.signbox{border:1.5px dashed var(--border);border-radius:7px;height:50px;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--muted);cursor:pointer;background:var(--bg);transition:all .18s;}
+.signbox.signed{border-color:var(--teal);background:var(--teal-l);color:var(--teal);font-weight:700;}
+.sign-row{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:11px;}
+
+/* ── DIVIDER ── */
+.div{height:1px;background:var(--border);margin:15px 0;}
+
+/* ── STAT ROW ── */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-bottom:20px;}
+.sc{background:var(--white);border:1px solid var(--border);border-radius:11px;padding:14px 16px;box-shadow:var(--sh);}
+.sc-n{font-family:'DM Serif Display',serif;font-size:26px;}
+.sc-l{font-size:11px;color:var(--muted);margin-top:1px;}
+.sc-d{font-size:10px;margin-top:3px;font-weight:600;}
+
+/* ── TWO COL LAYOUT ── */
+.two-col{display:grid;grid-template-columns:258px 1fr;gap:18px;min-height:600px;}
+.tkt-list{display:flex;flex-direction:column;gap:7px;}
+.tkt{background:var(--white);border:1.5px solid var(--border);border-radius:10px;padding:11px 13px;cursor:pointer;transition:all .16s;}
+.tkt:hover{border-color:var(--muted);transform:translateX(2px);}
+.tkt.sel{border-color:var(--teal);background:#F0FAF6;}
+.tkt-id{font-size:9.5px;font-weight:700;color:var(--muted);letter-spacing:.06em;}
+.tkt-name{font-size:13px;font-weight:700;margin:2px 0;}
+.tkt-issue{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.tkt-ft{display:flex;align-items:center;justify-content:space-between;margin-top:6px;}
+
+/* ── DETAIL PANEL ── */
+.dl-sec{margin-bottom:15px;}
+.dl-sec h4{font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.dl-row{display:flex;justify-content:space-between;font-size:12.5px;padding:5px 0;border-bottom:1px solid var(--bg);}
+.dl-row span:first-child{color:var(--muted);}
+.act-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px;padding-top:13px;border-top:1px solid var(--border);}
+
+/* ── TIMELINE ── */
+.tl{display:flex;flex-direction:column;}
+.tl-r{display:flex;gap:10px;padding-bottom:12px;position:relative;}
+.tl-r:not(:last-child)::before{content:'';position:absolute;left:10px;top:22px;width:1px;height:calc(100% - 6px);background:var(--border);}
+.tl-i{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;}
+.tl-t{font-size:12px;font-weight:700;}
+.tl-d{font-size:10.5px;color:var(--muted);margin-top:1px;}
+
+/* ── CHIPS / FILTER ── */
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:15px;}
+.chip{background:var(--white);border:1px solid var(--border);border-radius:7px;padding:5px 11px;font-size:11.5px;font-weight:600;cursor:pointer;transition:all .16s;}
+.chip:hover{border-color:var(--teal);}
+.chip.on{background:var(--teal-l);border-color:var(--teal);color:var(--teal);}
+
+/* ── FEEDBACK / RATING ── */
+.star-row{display:flex;gap:6px;margin:8px 0;}
+.star{font-size:26px;cursor:pointer;color:var(--border);transition:color .13s,transform .13s;}
+.star:hover,.star.on{color:#E9A825;}
+.star:hover{transform:scale(1.2);}
+.fb-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:12px 0;}
+.fb-item{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:11px 13px;}
+.fb-lbl{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;margin-bottom:5px;}
+.fb-stars{display:flex;gap:4px;}
+.fb-star{font-size:18px;cursor:pointer;color:var(--border);transition:color .12s;}
+.fb-star.on{color:#E9A825;}
+
+/* ── PAYMENT GATEWAY ── */
+.pg-overlay{display:none;position:fixed;inset:0;background:rgba(15,15,12,.55);z-index:500;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+.pg-overlay.open{display:flex;}
+.pg-modal{background:#fff;border-radius:18px;width:420px;max-width:95vw;box-shadow:var(--sh-lg);overflow:hidden;animation:sU .26s ease;}
+@keyframes sU{from{transform:translateY(22px);opacity:0}to{transform:translateY(0);opacity:1}}
+.pg-hdr{background:linear-gradient(135deg,#0C6E58,#1D9E75);padding:18px 22px;display:flex;align-items:center;justify-content:space-between;}
+.pg-m{display:flex;align-items:center;gap:9px;}
+.pg-logo{width:36px;height:36px;background:rgba(255,255,255,.15);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:17px;}
+.pg-mname{font-family:'DM Serif Display',serif;font-size:14.5px;color:#fff;}
+.pg-msub{font-size:10px;color:rgba(255,255,255,.6);margin-top:1px;}
+.pg-amt{text-align:right;}
+.pg-amt .big{font-family:'DM Serif Display',serif;font-size:22px;color:#fff;}
+.pg-amt .sm{font-size:9px;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.06em;}
+.pg-sec{display:flex;align-items:center;gap:10px;padding:7px 22px;background:#f8f8f6;border-bottom:1px solid var(--border);font-size:10px;font-weight:600;color:var(--muted);}
+.pg-tabs{display:flex;border-bottom:2px solid var(--border);}
+.pg-tab{flex:1;padding:11px 6px;text-align:center;font-size:11px;font-weight:700;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .18s;display:flex;flex-direction:column;align-items:center;gap:2px;}
+.pg-tab .ti{font-size:15px;}
+.pg-tab.on{color:var(--teal);border-bottom-color:var(--teal);}
+.pg-body{padding:18px 22px;}
+.upi-apps{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:13px;}
+.upi-app{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;background:var(--bg);min-width:60px;transition:all .16s;}
+.upi-app:hover,.upi-app.on{border-color:var(--teal);background:var(--teal-l);}
+.upi-app-n{font-size:9.5px;font-weight:700;color:var(--muted);}
+.upi-wrap{position:relative;margin-bottom:13px;}
+.upi-wrap input{padding-right:62px;}
+.upi-vfy{position:absolute;right:5px;top:50%;transform:translateY(-50%);background:var(--teal);color:#fff;border:none;border-radius:6px;padding:5px 10px;font-size:10.5px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.cv-card{background:linear-gradient(135deg,#1C2E4A,#2D4A6E);border-radius:11px;padding:15px 17px;margin-bottom:13px;position:relative;overflow:hidden;}
+.cv-card::before{content:'';position:absolute;top:-25px;right:-25px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,.05);}
+.cv-chip{width:26px;height:19px;background:linear-gradient(135deg,#d4a843,#f0cc70);border-radius:3px;margin-bottom:11px;}
+.cv-num{font-family:'DM Serif Display',serif;font-size:15px;color:#fff;letter-spacing:3px;margin-bottom:8px;}
+.cv-row{display:flex;justify-content:space-between;}
+.cv-name,.cv-exp{font-size:10px;color:rgba(255,255,255,.55);letter-spacing:.05em;}
+.cv-brand{position:absolute;right:15px;bottom:13px;font-size:19px;opacity:.9;}
+.nb-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:13px;}
+.nb-bank{display:flex;align-items:center;gap:8px;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;background:var(--bg);transition:all .16s;}
+.nb-bank:hover,.nb-bank.on{border-color:var(--teal);background:var(--teal-l);}
+.nb-name{font-size:12px;font-weight:700;}
+.pg-proc{padding:32px 22px;text-align:center;display:none;}
+.pg-proc.on{display:block;}
+.spinner{width:46px;height:46px;border:3px solid var(--border);border-top-color:var(--teal);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 13px;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.pg-ok{padding:32px 22px;text-align:center;display:none;}
+.pg-ok.on{display:block;}
+.ok-ring{width:56px;height:56px;border-radius:50%;background:var(--teal-l);display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 13px;border:2px solid var(--teal-m);}
+.rcpt{background:var(--bg);border-radius:9px;padding:10px 13px;font-size:11.5px;text-align:left;margin-bottom:13px;}
+.r-row{display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px dashed var(--border);}
+.r-row:last-child{border:none;}
+
+/* ── MODAL ── */
+.moverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.38);z-index:400;align-items:center;justify-content:center;}
+.moverlay.open{display:flex;}
+.modal{background:#fff;border-radius:14px;padding:22px;width:390px;max-width:95vw;box-shadow:var(--sh-lg);animation:sU .22s ease;}
+.m-title{font-family:'DM Serif Display',serif;font-size:18px;margin-bottom:13px;}
+.m-btns{display:flex;gap:8px;justify-content:flex-end;margin-top:14px;}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:22px;right:22px;background:var(--ink);color:#fff;padding:10px 16px;border-radius:9px;font-size:12.5px;font-weight:600;opacity:0;transform:translateY(8px);transition:all .28s;z-index:600;pointer-events:none;}
+.toast.on{opacity:1;transform:translateY(0);}
+
+/* ── INVOICE RAISED INDICATOR ── */
+.inv-raised{background:var(--gold-l);border:1px solid #F0D090;border-radius:9px;padding:11px 14px;display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.inv-raised-ico{font-size:20px;flex-shrink:0;}
+.inv-raised-txt{font-size:12.5px;color:var(--gold);}
+.inv-raised-txt strong{display:block;font-weight:700;}
+
+/* ── QUOTE APPROVAL ── */
+.quote-card{border:2px solid var(--gold-m);border-radius:11px;background:var(--gold-l);padding:16px 18px;margin-bottom:14px;}
+.quote-title{font-family:'DM Serif Display',serif;font-size:15px;color:var(--gold);margin-bottom:8px;}
+
+/* ── FINAL INVOICE ── */
+.final-inv{border:2px solid var(--teal-m);border-radius:11px;background:var(--teal-l);padding:16px 18px;margin-bottom:14px;}
+.final-inv-title{font-family:'DM Serif Display',serif;font-size:15px;color:var(--teal);margin-bottom:8px;}
+
+/* ── WARRANTY ── */
+.warranty{background:linear-gradient(135deg,var(--teal),var(--teal-m));border-radius:11px;padding:16px 18px;color:#fff;margin-bottom:14px;}
+.wt{font-family:'DM Serif Display',serif;font-size:15px;margin-bottom:6px;}
+.wgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px;}
+.wi{background:rgba(255,255,255,.12);border-radius:7px;padding:7px 11px;}
+.wi-l{font-size:9px;opacity:.65;font-weight:700;letter-spacing:.05em;text-transform:uppercase;}
+.wi-v{font-size:12.5px;font-weight:700;margin-top:2px;}
+
+@media(max-width:740px){
+  .view{padding:16px 14px 40px;}
+  .two-col{grid-template-columns:1fr;}
+  .fg2,.fg3,.nb-grid,.sign-row,.fb-grid,.wgrid{grid-template-columns:1fr;}
+  .stats{grid-template-columns:1fr 1fr;}
+  .topbar{padding:0 14px;}
+  .rtab{padding:4px 9px;font-size:9.5px;}
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="logo">Duromax Building Systems Pvt Ltd Aluminium Doors/Windows/Facade <span class="logo-tag">Service Portal</span></div>
+  <div class="role-bar">
+    <button class="rtab on" onclick="switchRole('customer',this)">Customer</button>
+    <button class="rtab" onclick="switchRole('admin',this)">Admin</button>
+    <button class="rtab" onclick="switchRole('supervisor',this)">Supervisor</button>
+    <button class="rtab" onclick="switchRole('installer',this)">Installer</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     CUSTOMER VIEW  — 8 steps from Excel
+═══════════════════════════════════════ -->
+<div class="view on" id="view-customer">
+  <div class="pg-h">My Service Request</div>
+  <div class="pg-s">Track your Duromax repair — from enquiry to completion.</div>
+
+  <div class="prog">
+    <div class="prog-lbl">Your Journey</div>
+    <div class="prog-steps" id="cust-prog"></div>
+  </div>
+
+  <!-- STEP 1: Enquiry Form -->
+  <div id="cs1">
+    <div class="card">
+      <div class="ct">📋 Fill Enquiry Form</div>
+      <div class="fg2">
+        <div class="fg"><label class="lbl">Full Name</label><input id="c-name" placeholder="e.g. Priya Sharma"/></div>
+        <div class="fg"><label class="lbl">Mobile Number</label><input id="c-phone" placeholder="+91 98765 43210"/></div>
+      </div>
+      <div class="fg"><label class="lbl">Site Address</label><input id="c-addr" placeholder="Flat 4B, Sector 56, Gurugram"/></div>
+      <div class="fg2">
+        <div class="fg"><label class="lbl">Brand of Doors / Windows</label><input placeholder="e.g. Fenesta, LG Hausys, Custom"/></div>
+        <div class="fg"><label class="lbl">Site Location</label>
+          <select id="c-city"><option>Within Delhi NCR</option><option>Outstation (boarding &amp; lodging extra)</option></select>
+        </div>
+      </div>
+      <div class="fg"><label class="lbl">Description of Complaint</label><textarea id="c-desc" placeholder="Describe the issue with your door or window in detail…"></textarea></div>
+      <div class="fg">
+        <label class="lbl">Was installation done by Duromax?</label>
+        <div class="radio-row">
+          <label class="ropt sel" id="ro-yes"><input type="radio" name="inst" onchange="selR('yes')"> Yes</label>
+          <label class="ropt" id="ro-no"><input type="radio" name="inst" onchange="selR('no')"> No</label>
+          <label class="ropt" id="ro-dk"><input type="radio" name="inst" onchange="selR('dk')"> Not Sure</label>
+        </div>
+      </div>
+      <div class="fg">
+        <label class="lbl">Attach Photo (optional)</label>
+        <div style="border:1.5px dashed var(--border);border-radius:7px;padding:12px;text-align:center;font-size:12px;color:var(--muted);cursor:pointer;background:var(--bg);" onclick="toast('📷 Photo attached!')">📷 Tap to attach a photo of the issue</div>
+      </div>
+      <div class="btns"><button class="btn btn-teal" onclick="cStep(2)">Submit Enquiry →</button></div>
+    </div>
+  </div>
+
+  <!-- STEP 2: Invoice Raised by Admin — Customer Pays Visit Charges -->
+  <div id="cs2" style="display:none;">
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;">
+        <div class="ct" style="margin:0;">🧾 Site Visit Invoice</div>
+        <span class="bdg bdg-amber">⏳ Payment Pending</span>
+      </div>
+      <div class="inv-raised">
+        <div class="inv-raised-ico">📄</div>
+        <div class="inv-raised-txt"><strong>Invoice Raised by Admin</strong>Admin has reviewed your enquiry and generated a site visit invoice. Please pay to confirm your appointment.</div>
+      </div>
+      <div class="inv">
+        <div class="inv-hdr"><span class="inv-title">Duromax — Site Visit Invoice</span><span class="inv-num">INV-<span id="inv1-num">2041</span></span></div>
+        <div class="inv-row"><span>Site Visit Charges</span><span>₹2,542</span></div>
+        <div class="inv-row"><span>GST (18%)</span><span>₹458</span></div>
+        <div id="bl-row" class="inv-row" style="display:none;"><span>Boarding &amp; Lodging</span><span>₹1,500</span></div>
+        <div class="inv-row"><span>Total Amount Due</span><span id="inv1-total">₹3,000</span></div>
+      </div>
+      <div class="wa"><div style="font-size:17px;flex-shrink:0;">💬</div><div class="wa-b"><strong>WhatsApp — Invoice Sent</strong>Payment link has been shared on your registered number. Valid for 48 hours.</div></div>
+      <div class="btns">
+        <button class="btn btn-outline" onclick="cStep(1)">← Back</button>
+        <button class="btn btn-gold" onclick="openPG(getInv1Amt(),'Site Visit Charges',2)">💳 Pay Now →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3: Payment Confirmed + Field Staff Assigned -->
+  <div id="cs3" style="display:none;">
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;">
+        <div class="ct" style="margin:0;">✅ Payment Confirmed</div>
+        <span class="bdg bdg-teal">✓ Paid</span>
+      </div>
+      <div class="wa"><div style="font-size:17px;flex-shrink:0;">💬</div><div class="wa-b"><strong>Payment Received — WhatsApp Sent</strong>Your payment has been confirmed. Admin &amp; accounts team have been notified. A supervisor or installer will be assigned based on your case — within 48 hours.</div></div>
+      <div class="div"></div>
+      <div style="background:var(--gold-l);border:1px solid #F0D090;border-radius:9px;padding:11px 14px;margin-bottom:12px;font-size:12.5px;color:var(--gold);"><strong style="display:block;margin-bottom:3px;">ℹ️ What Happens Next</strong>Admin will review your complaint details and decide whether a <strong>Supervisor</strong> (for inspection &amp; quote) or a direct <strong>Installer</strong> (if issue is already clear from your conversation) will visit your site.</div>
+      <div style="font-size:13.5px;font-weight:700;margin-bottom:8px;">Assigned Field Staff</div>
+      <div class="pcard">
+        <div class="av" style="background:var(--coral);">S</div>
+        <div style="flex:1;">
+          <div class="pname">Sandeep Rawat</div>
+          <div class="psub">Senior Supervisor · 8 yrs exp · ⭐ 4.8</div>
+          <div class="psub" style="margin-top:3px;">📅 Visit: <strong>29 Mar 2026, 10:00 AM – 12:00 PM</strong></div>
+        </div>
+        <span class="bdg bdg-coral">Scheduled</span>
+      </div>
+      <div class="sla-w" style="margin-top:10px;">
+        <div class="sla-lbl"><span>Assignment SLA (48 hrs)</span><span style="color:var(--teal);">Assigned in 6 hrs ✓</span></div>
+        <div class="sla-bar"><div class="sla-fill" style="width:13%;background:var(--teal-m);"></div></div>
+      </div>
+      <div class="btns"><button class="btn btn-teal" onclick="cStep(4)">Site Visit Done →</button></div>
+    </div>
+  </div>
+
+  <!-- STEP 4: Supervisor Report + Spare Parts Quote to Customer -->
+  <div id="cs4" style="display:none;">
+    <div class="card">
+      <div class="ct">🔍 Supervisor's Inspection Report</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+        <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 13px;"><div style="font-size:9.5px;font-weight:700;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;margin-bottom:3px;">Complaint Raised By Client</div><div style="font-size:12.5px;font-weight:500;">Sliding door does not close properly</div></div>
+        <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 13px;"><div style="font-size:9.5px;font-weight:700;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;margin-bottom:3px;">Observed by Supervisor</div><div style="font-size:12.5px;font-weight:500;">Worn rollers + misaligned frame gap</div></div>
+        <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 13px;"><div style="font-size:9.5px;font-weight:700;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;margin-bottom:3px;">Urgency</div><div style="font-size:12.5px;font-weight:500;">Medium</div></div>
+        <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 13px;"><div style="font-size:9.5px;font-weight:700;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;margin-bottom:3px;">Est. Repair Time</div><div style="font-size:12.5px;font-weight:500;">2–3 hours</div></div>
+      </div>
+      <div class="quote-card">
+        <div class="quote-title">📦 Spare Parts Quote — Awaiting Your Approval</div>
+        <table class="ptbl">
+          <tr><th>S.No</th><th>Article</th><th>Article No.</th><th>Qty</th><th>Unit Cost</th><th>Total</th></tr>
+          <tr><td>1</td><td>UPVC Weather Strip</td><td>WS-75-A</td><td>2</td><td>₹400</td><td>₹800</td></tr>
+          <tr><td>2</td><td>Roller Set (75mm)</td><td>RS-75-B</td><td>1</td><td>₹600</td><td>₹600</td></tr>
+          <tr><td>3</td><td>Labour Charges</td><td>—</td><td>—</td><td>—</td><td>₹1,200</td></tr>
+        </table>
+        <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700;border-top:1.5px solid var(--gold-m);padding-top:8px;margin-top:4px;">
+          <span style="color:var(--gold);">Estimated Total</span><span style="color:var(--gold);">₹2,600</span>
+        </div>
+        <p style="font-size:11.5px;color:var(--gold);margin-top:7px;">⚡ Payment will be collected only after repair is complete and you are satisfied.</p>
+      </div>
+      <div class="btns">
+        <button class="btn btn-outline" onclick="toast('Concern sent to admin.')">⚠️ Raise Concern</button>
+        <button class="btn btn-teal" onclick="cStep(5)">✓ Approve Quote →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 5: Installer Assigned + Repair Underway -->
+  <div id="cs5" style="display:none;">
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;">
+        <div class="ct" style="margin:0;">🔧 Installer Assigned — Repair Underway</div>
+        <span class="bdg bdg-blue">In Progress</span>
+      </div>
+      <p style="font-size:12.5px;color:var(--muted);margin-bottom:10px;">You approved the spare parts quote. Admin has assigned an installer with the approved parts list.</p>
+      <div class="pcard">
+        <div class="av" style="background:var(--blue);">R</div>
+        <div>
+          <div class="pname">Ramesh Verma</div>
+          <div class="psub">UPVC Installer · Assigned by Admin</div>
+          <div class="psub" style="margin-top:3px;">📦 Parts in hand · 🔧 Repair ETA: 2–3 hours</div>
+        </div>
+      </div>
+      <div class="wa" style="margin-top:11px;"><div style="font-size:17px;flex-shrink:0;">💬</div><div class="wa-b"><strong>Installer On Site</strong>You will receive a completion notice once the work is done and the physical handover form is signed and uploaded.</div></div>
+      <div class="btns"><button class="btn btn-teal" onclick="cStep(6)">Repair Completed &amp; Signed Off →</button></div>
+    </div>
+  </div>
+
+  <!-- STEP 6: Final Invoice Raised by Admin — Customer Pays -->
+  <div id="cs6" style="display:none;">
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;">
+        <div class="ct" style="margin:0;">🧾 Final Invoice</div>
+        <span class="bdg bdg-amber">⏳ Payment Pending</span>
+      </div>
+      <div class="inv-raised">
+        <div class="inv-raised-ico">📄</div>
+        <div class="inv-raised-txt"><strong>Final Invoice Raised by Admin</strong>Repair is complete. Admin has raised the final invoice for spare parts and labour. Please review and pay.</div>
+      </div>
+      <div class="inv">
+        <div class="inv-hdr"><span class="inv-title">Duromax— Repair Invoice</span><span class="inv-num">INV-<span id="inv2-num">2042</span></span></div>
+        <div class="inv-row"><span>UPVC Weather Strip ×2 (WS-75-A)</span><span>₹800</span></div>
+        <div class="inv-row"><span>Roller Set ×1 (RS-75-B)</span><span>₹600</span></div>
+        <div class="inv-row"><span>Labour Charges</span><span>₹1,200</span></div>
+        <div class="inv-row"><span>GST (18%)</span><span>₹468</span></div>
+        <div class="inv-row"><span>Total Amount Due</span><span>₹3,068</span></div>
+      </div>
+      <p style="font-size:11.5px;color:var(--muted);">✅ This matches the quote you approved. Payment collected only after satisfaction.</p>
+      <div class="wa"><div style="font-size:17px;flex-shrink:0;">💬</div><div class="wa-b"><strong>WhatsApp — Final Invoice Sent</strong>Payment link shared. Please pay to close the ticket.</div></div>
+      <div class="btns">
+        <button class="btn btn-gold" onclick="openPG('3068','Spare Parts + Labour',6)">💳 Pay ₹3,068 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 7: Ticket Closed + Warranty -->
+  <div id="cs7" style="display:none;">
+    <div class="warranty">
+      <div class="wt">🛡️ Warranty Activated</div>
+      <div style="font-size:11.5px;opacity:.75;margin-bottom:6px;">Your repair is covered under Duromax service warranty.</div>
+      <div class="wgrid">
+        <div class="wi"><div class="wi-l">Ticket ID</div><div class="wi-v">DX-2041</div></div>
+        <div class="wi"><div class="wi-l">Warranty Until</div><div class="wi-v">29 Mar 2027</div></div>
+        <div class="wi"><div class="wi-l">Parts Replaced</div><div class="wi-v">Weather Strip, Roller</div></div>
+        <div class="wi"><div class="wi-l">Serviced By</div><div class="wi-v">Ramesh Verma</div></div>
+      </div>
+    </div>
+
+    <!-- Feedback block shown only when admin sends feedback link -->
+    <div class="card" id="cs7-feedback" style="display:none;">
+      <div class="ct">⭐ Share Your Feedback</div>
+      <p style="font-size:12.5px;color:var(--muted);margin-bottom:14px;">Duromax has invited you to share your experience. Your feedback helps improve service quality.</p>
+      <div class="fb-grid">
+        <div class="fb-item">
+          <div class="fb-lbl">Overall Service</div>
+          <div class="fb-stars" id="fb-overall">
+            <span class="fb-star on" onclick="fbRate('overall',1)">★</span>
+            <span class="fb-star on" onclick="fbRate('overall',2)">★</span>
+            <span class="fb-star on" onclick="fbRate('overall',3)">★</span>
+            <span class="fb-star on" onclick="fbRate('overall',4)">★</span>
+            <span class="fb-star" onclick="fbRate('overall',5)">★</span>
+          </div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px;" id="fb-overall-lbl">4 / 5</div>
+        </div>
+        <div class="fb-item">
+          <div class="fb-lbl">Supervisor / Installer Behaviour</div>
+          <div class="fb-stars" id="fb-sup">
+            <span class="fb-star on" onclick="fbRate('sup',1)">★</span>
+            <span class="fb-star on" onclick="fbRate('sup',2)">★</span>
+            <span class="fb-star on" onclick="fbRate('sup',3)">★</span>
+            <span class="fb-star on" onclick="fbRate('sup',4)">★</span>
+            <span class="fb-star on" onclick="fbRate('sup',5)">★</span>
+          </div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px;" id="fb-sup-lbl">5 / 5</div>
+        </div>
+        <div class="fb-item">
+          <div class="fb-lbl">Repair Quality</div>
+          <div class="fb-stars" id="fb-qual">
+            <span class="fb-star on" onclick="fbRate('qual',1)">★</span>
+            <span class="fb-star on" onclick="fbRate('qual',2)">★</span>
+            <span class="fb-star on" onclick="fbRate('qual',3)">★</span>
+            <span class="fb-star on" onclick="fbRate('qual',4)">★</span>
+            <span class="fb-star" onclick="fbRate('qual',5)">★</span>
+          </div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px;" id="fb-qual-lbl">4 / 5</div>
+        </div>
+        <div class="fb-item">
+          <div class="fb-lbl">Timeliness</div>
+          <div class="fb-stars" id="fb-time">
+            <span class="fb-star on" onclick="fbRate('time',1)">★</span>
+            <span class="fb-star on" onclick="fbRate('time',2)">★</span>
+            <span class="fb-star on" onclick="fbRate('time',3)">★</span>
+            <span class="fb-star" onclick="fbRate('time',4)">★</span>
+            <span class="fb-star" onclick="fbRate('time',5)">★</span>
+          </div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px;" id="fb-time-lbl">3 / 5</div>
+        </div>
+      </div>
+      <div class="fg" style="margin-top:4px;"><label class="lbl">Additional Comments (optional)</label><textarea placeholder="Any other feedback for the Duromax team…"></textarea></div>
+      <div class="btns">
+        <button class="btn btn-outline btn-sm" onclick="toast('📄 Receipt downloaded.')">Download Receipt</button>
+        <button class="btn btn-teal" onclick="submitFb()">Submit Feedback →</button>
+      </div>
+    </div>
+
+    <!-- Closed without feedback link yet -->
+    <div class="card" id="cs7-nofb">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="font-size:28px;">🎉</div>
+        <div>
+          <div style="font-size:14px;font-weight:700;margin-bottom:3px;">Service Complete</div>
+          <div style="font-size:12px;color:var(--muted);">Your ticket is now closed. Duromax may send you a feedback link via WhatsApp if they'd like your review.</div>
+        </div>
+      </div>
+      <div class="btns" style="margin-top:12px;">
+        <button class="btn btn-outline btn-sm" onclick="toast('📄 Receipt downloaded.')">Download Receipt</button>
+        <button class="btn btn-outline btn-sm" onclick="toast('🛡️ Warranty certificate downloaded.')">🛡️ Warranty</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     ADMIN VIEW
+═══════════════════════════════════════ -->
+<div class="view" id="view-admin">
+  <div class="pg-h">Admin Dashboard</div>
+  <div class="pg-s">Manage tickets · Raise invoices · Assign supervisor or installer · Send feedback · Track team</div>
+  <div class="stats">
+    <div class="sc"><div class="sc-n">14</div><div class="sc-l">Open Tickets</div><div class="sc-d" style="color:#16a34a;">↑ 3 new today</div></div>
+    <div class="sc"><div class="sc-n">₹1.1L</div><div class="sc-l">Collected This Month</div><div class="sc-d" style="color:#16a34a;">↑ 18% vs last month</div></div>
+    <div class="sc"><div class="sc-n">4.6★</div><div class="sc-l">Avg Customer Rating</div><div class="sc-d" style="color:#16a34a;">↑ 0.2 this week</div></div>
+    <div class="sc"><div class="sc-n">3</div><div class="sc-l">SLA Breaches</div><div class="sc-d" style="color:#dc2626;">⚠ Needs attention</div></div>
+  </div>
+  <div class="chips">
+    <div class="chip on" onclick="aChip(this,'all')">All (14)</div>
+    <div class="chip" onclick="aChip(this,'new')">New — Invoice Pending (5)</div>
+    <div class="chip" onclick="aChip(this,'invoiced')">Invoice Sent (3)</div>
+    <div class="chip" onclick="aChip(this,'scheduled')">Supervisor Assigned (3)</div>
+    <div class="chip" onclick="aChip(this,'repair')">In Repair (2)</div>
+    <div class="chip" onclick="aChip(this,'finalinv')">Final Invoice Pending (1)</div>
+    <div class="chip" onclick="aChip(this,'closed')">Closed (42)</div>
+  </div>
+  <div class="two-col">
+    <div class="tkt-list" id="adm-list"></div>
+    <div id="adm-detail">
+      <div class="card" style="text-align:center;padding:50px 24px;color:var(--muted);">
+        <div style="font-size:32px;margin-bottom:9px;">📋</div>
+        <div style="font-size:14px;font-weight:600;">Select a ticket to view details</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SUPERVISOR VIEW
+═══════════════════════════════════════ -->
+<div class="view" id="view-supervisor">
+  <div class="pg-h">Supervisor Dashboard</div>
+  <div class="pg-s">View assigned site visits · Fill inspection report · Get customer &amp; supervisor sign-off</div>
+  <div class="stats" style="grid-template-columns:repeat(3,1fr);">
+    <div class="sc"><div class="sc-n">3</div><div class="sc-l">Today's Visits</div></div>
+    <div class="sc"><div class="sc-n">2</div><div class="sc-l">Reports Pending</div></div>
+    <div class="sc"><div class="sc-n">4.7★</div><div class="sc-l">My Rating</div></div>
+  </div>
+  <div class="two-col">
+    <div>
+      <div style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">Assigned Visits</div>
+      <div class="tkt-list" id="sup-list"></div>
+    </div>
+    <div id="sup-detail">
+      <div class="card" style="text-align:center;padding:50px 24px;color:var(--muted);">
+        <div style="font-size:32px;margin-bottom:9px;">🔍</div>
+        <div style="font-size:14px;font-weight:600;">Select a visit to fill report</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     INSTALLER VIEW
+═══════════════════════════════════════ -->
+<div class="view" id="view-installer">
+  <div class="pg-h">Installer Dashboard</div>
+  <div class="pg-s">View assigned repair jobs · Upload site photos · Upload physical sign-off form</div>
+  <div class="stats" style="grid-template-columns:repeat(3,1fr);">
+    <div class="sc"><div class="sc-n">2</div><div class="sc-l">Today's Jobs</div></div>
+    <div class="sc"><div class="sc-n">1</div><div class="sc-l">Handover Pending</div></div>
+    <div class="sc"><div class="sc-n">4.8★</div><div class="sc-l">My Rating</div></div>
+  </div>
+  <div class="two-col">
+    <div>
+      <div style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">Assigned Jobs</div>
+      <div class="tkt-list" id="inst-list"></div>
+    </div>
+    <div id="inst-detail">
+      <div class="card" style="text-align:center;padding:50px 24px;color:var(--muted);">
+        <div style="font-size:32px;margin-bottom:9px;">🔧</div>
+        <div style="font-size:14px;font-weight:600;">Select a job to view details</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PAYMENT GATEWAY MODAL
+═══════════════════════════════════════ -->
+<div class="pg-overlay" id="pg-overlay">
+  <div class="pg-modal">
+    <div class="pg-hdr">
+      <div class="pg-m">
+        <div class="pg-logo">🏠</div>
+        <div><div class="pg-mname">Duromax</div><div class="pg-msub">Secure Checkout</div></div>
+      </div>
+      <div class="pg-amt">
+        <div class="sm">Amount Due</div>
+        <div class="big" id="pg-amt-disp">₹3,000</div>
+      </div>
+    </div>
+    <div class="pg-sec">
+      <span>🔒 256-bit SSL</span><span>🛡️ PCI DSS</span><span>✓ RBI Licensed</span>
+      <span style="margin-left:auto;font-size:10px;">Powered by Razorpay</span>
+    </div>
+    <div class="pg-tabs" id="pg-tabs">
+      <div class="pg-tab on" onclick="pgTab(this,'upi')"><div class="ti">📱</div>UPI</div>
+      <div class="pg-tab" onclick="pgTab(this,'card')"><div class="ti">💳</div>Card</div>
+      <div class="pg-tab" onclick="pgTab(this,'nb')"><div class="ti">🏦</div>Net Banking</div>
+    </div>
+
+    <!-- UPI Panel -->
+    <div class="pg-body" id="pg-upi">
+      <div style="font-size:11.5px;color:var(--muted);margin-bottom:9px;">Select UPI app or enter ID</div>
+      <div class="upi-apps">
+        <div class="upi-app on" onclick="selUpi(this)"><span style="font-size:20px;">🟢</span><span class="upi-app-n">GPay</span></div>
+        <div class="upi-app" onclick="selUpi(this)"><span style="font-size:20px;">🔵</span><span class="upi-app-n">PhonePe</span></div>
+        <div class="upi-app" onclick="selUpi(this)"><span style="font-size:20px;">🟠</span><span class="upi-app-n">Paytm</span></div>
+        <div class="upi-app" onclick="selUpi(this)"><span style="font-size:20px;">⚡</span><span class="upi-app-n">BHIM</span></div>
+        <div class="upi-app" onclick="selUpi(this)"><span style="font-size:20px;">🟡</span><span class="upi-app-n">Amazon</span></div>
+      </div>
+      <div class="upi-wrap"><input type="text" placeholder="yourname@okicici" id="upi-id"/><button class="upi-vfy" onclick="vfyUpi()">Verify</button></div>
+      <button class="btn btn-teal" style="width:100%;justify-content:center;" onclick="procPay()">Pay <span id="pg-btn-amt">₹3,000</span></button>
+      <div style="text-align:center;margin-top:7px;font-size:10px;color:var(--muted);">Auto-debit only after approval on UPI app</div>
+    </div>
+
+    <!-- Card Panel -->
+    <div class="pg-body" id="pg-card" style="display:none;">
+      <div class="cv-card">
+        <div class="cv-chip"></div>
+        <div class="cv-num" id="cv-num">•••• •••• •••• ••••</div>
+        <div class="cv-row"><div><div class="cv-name" id="cv-name">CARD HOLDER</div><div class="cv-exp" id="cv-exp">MM / YY</div></div></div>
+        <div class="cv-brand" id="cv-brand">💳</div>
+      </div>
+      <div class="fg" style="margin-bottom:9px;"><label class="lbl">Card Number</label><input type="text" maxlength="19" placeholder="1234 5678 9012 3456" oninput="fmtCard(this)"/></div>
+      <div class="fg" style="margin-bottom:9px;"><label class="lbl">Cardholder Name</label><input type="text" placeholder="Priya Sharma" oninput="document.getElementById('cv-name').textContent=this.value.toUpperCase()||'CARD HOLDER'"/></div>
+      <div class="fg2">
+        <div class="fg"><label class="lbl">Expiry</label><input type="text" maxlength="5" placeholder="MM/YY" oninput="fmtExp(this)"/></div>
+        <div class="fg"><label class="lbl">CVV</label><input type="password" maxlength="3" placeholder="•••"/></div>
+      </div>
+      <button class="btn btn-teal" style="width:100%;justify-content:center;margin-top:6px;" onclick="procPay()">Pay <span class="pg-ba">₹3,000</span></button>
+      <div style="text-align:center;margin-top:7px;font-size:10px;color:var(--muted);">3D Secure authentication will follow</div>
+    </div>
+
+    <!-- Net Banking Panel -->
+    <div class="pg-body" id="pg-nb" style="display:none;">
+      <div style="font-size:11.5px;color:var(--muted);margin-bottom:9px;">Select your bank</div>
+      <div class="nb-grid">
+        <div class="nb-bank on" onclick="selBank(this)"><span style="font-size:20px;">🏦</span><span class="nb-name">SBI</span></div>
+        <div class="nb-bank" onclick="selBank(this)"><span style="font-size:20px;">🟦</span><span class="nb-name">HDFC</span></div>
+        <div class="nb-bank" onclick="selBank(this)"><span style="font-size:20px;">🟠</span><span class="nb-name">ICICI</span></div>
+        <div class="nb-bank" onclick="selBank(this)"><span style="font-size:20px;">🔴</span><span class="nb-name">Axis</span></div>
+        <div class="nb-bank" onclick="selBank(this)"><span style="font-size:20px;">🟡</span><span class="nb-name">Kotak</span></div>
+        <div class="nb-bank" onclick="selBank(this)"><span style="font-size:20px;">🟢</span><span class="nb-name">PNB</span></div>
+      </div>
+      <button class="btn btn-teal" style="width:100%;justify-content:center;" onclick="procPay()">Proceed to Bank →</button>
+    </div>
+
+    <!-- Processing -->
+    <div class="pg-proc" id="pg-proc">
+      <div class="spinner"></div>
+      <div style="font-size:14px;font-weight:700;margin-bottom:3px;">Processing Payment…</div>
+      <div style="font-size:11.5px;color:var(--muted);">Do not close this window</div>
+    </div>
+
+    <!-- Success -->
+    <div class="pg-ok" id="pg-ok">
+      <div class="ok-ring">✅</div>
+      <div style="font-size:16px;font-weight:700;margin-bottom:3px;">Payment Successful!</div>
+      <div style="font-size:12.5px;color:var(--muted);margin-bottom:13px;" id="pg-ok-msg">₹3,000 paid.</div>
+      <div class="rcpt">
+        <div class="r-row"><span style="color:var(--muted);">Transaction ID</span><span style="font-weight:700;">DX-TXN-<span id="txn-id">0000</span></span></div>
+        <div class="r-row"><span style="color:var(--muted);">Date &amp; Time</span><span>29 Mar 2026, 10:14 AM</span></div>
+        <div class="r-row"><span style="color:var(--muted);">Payment Mode</span><span id="pay-mode">UPI · GPay</span></div>
+        <div class="r-row"><span style="color:var(--muted);">WhatsApp Receipt</span><span style="color:var(--teal);font-weight:700;">✓ Sent</span></div>
+        <div class="r-row"><span style="color:var(--muted);">Accounts Team</span><span style="color:var(--teal);font-weight:700;">✓ Notified</span></div>
+      </div>
+      <button class="btn btn-teal" style="width:100%;justify-content:center;" onclick="closePG()">Done</button>
+    </div>
+  </div>
+</div>
+
+<!-- ASSIGN FIELD STAFF MODAL -->
+<div class="moverlay" id="m-sup">
+  <div class="modal" style="width:440px;">
+    <div class="m-title">Assign Field Staff</div>
+    <div style="background:var(--gold-l);border:1px solid #F0D090;border-radius:8px;padding:10px 13px;margin-bottom:14px;font-size:12px;color:var(--gold);">Based on your conversation with the customer, assign a <strong>Supervisor</strong> (for inspection &amp; quote) or an <strong>Installer</strong> (if issue is clear and repair can proceed directly).</div>
+    <div class="fg" style="margin-bottom:12px;">
+      <label class="lbl">Who to Send?</label>
+      <div class="radio-row" style="gap:8px;">
+        <label class="ropt sel" id="staff-sup-opt" onclick="setStaffType('supervisor')"><input type="radio" name="stafftype" style="display:none;"> 🔍 Supervisor (Inspect &amp; Quote)</label>
+        <label class="ropt" id="staff-inst-opt" onclick="setStaffType('installer')"><input type="radio" name="stafftype" style="display:none;"> 🔧 Installer (Direct Repair)</label>
+      </div>
+    </div>
+    <div id="staff-sup-section">
+      <div class="fg" style="margin-bottom:10px;"><label class="lbl">Select Supervisor</label>
+        <select id="sel-sup-name"><option>Sandeep Rawat — Senior Supervisor (⭐4.8)</option><option>Meena Kapoor — UPVC Specialist (⭐4.6)</option><option>Arun Singh — Field Supervisor (⭐4.4)</option></select>
+      </div>
+    </div>
+    <div id="staff-inst-section" style="display:none;">
+      <div class="fg" style="margin-bottom:10px;"><label class="lbl">Select Installer</label>
+        <select id="sel-inst-name"><option>Ramesh Verma — UPVC Installer (⭐4.7)</option><option>Suresh Yadav — Field Tech (⭐4.5)</option><option>Anil Sharma — Senior Installer (⭐4.8)</option></select>
+      </div>
+    </div>
+    <div class="fg2">
+      <div class="fg"><label class="lbl">Visit Date</label><input type="date"/></div>
+      <div class="fg"><label class="lbl">Time Slot</label>
+        <select><option>9:00–11:00 AM</option><option>11:00 AM–1:00 PM</option><option>2:00–4:00 PM</option><option>4:00–6:00 PM</option></select>
+      </div>
+    </div>
+    <div class="fg"><label class="lbl">Notes for Field Staff</label><textarea placeholder="Access instructions, tools needed, special notes…" style="min-height:52px;"></textarea></div>
+    <div class="m-btns">
+      <button class="btn btn-outline" onclick="closeM('m-sup')">Cancel</button>
+      <button class="btn btn-teal" onclick="confirmSup()">Assign &amp; Notify →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ASSIGN INSTALLER MODAL -->
+<div class="moverlay" id="m-inst">
+  <div class="modal">
+    <div class="m-title">Assign Installer</div>
+    <div class="fg" style="margin-bottom:10px;"><label class="lbl">Select Installer</label>
+      <select><option>Ramesh Verma — UPVC Installer (⭐4.7)</option><option>Suresh Yadav — Field Tech (⭐4.5)</option><option>Anil Sharma — Senior Installer (⭐4.8)</option></select>
+    </div>
+    <div class="fg2">
+      <div class="fg"><label class="lbl">Schedule Date</label><input type="date"/></div>
+      <div class="fg"><label class="lbl">Time Slot</label>
+        <select><option>9:00–11:00 AM</option><option>11:00 AM–1:00 PM</option><option>2:00–4:00 PM</option></select>
+      </div>
+    </div>
+    <div class="m-btns">
+      <button class="btn btn-outline" onclick="closeM('m-inst')">Cancel</button>
+      <button class="btn btn-teal" onclick="confirmInst()">Assign &amp; Notify →</button>
+    </div>
+  </div>
+</div>
+
+<!-- RAISE INVOICE MODAL -->
+<div class="moverlay" id="m-inv">
+  <div class="modal">
+    <div class="m-title">Raise Invoice</div>
+    <div style="font-size:12.5px;color:var(--muted);margin-bottom:13px;" id="m-inv-desc">Site Visit Invoice for this ticket.</div>
+    <div class="fg" style="margin-bottom:10px;"><label class="lbl">Invoice Type</label>
+      <select id="m-inv-type"><option>Site Visit Charges — ₹3,000 (incl. GST)</option><option>Spare Parts + Labour (custom amount)</option></select>
+    </div>
+    <div class="fg" style="margin-bottom:10px;"><label class="lbl">Amount (₹)</label><input type="number" id="m-inv-amt" value="3000"/></div>
+    <div class="fg"><label class="lbl">Notes</label><input type="text" placeholder="e.g. Within Delhi NCR" id="m-inv-note"/></div>
+    <div class="m-btns">
+      <button class="btn btn-outline" onclick="closeM('m-inv')">Cancel</button>
+      <button class="btn btn-gold" onclick="confirmInv()">Raise Invoice &amp; Send →</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast-el"></div>
+
+<script>
+// ═══════════════════════════
+//  CUSTOMER FLOW
+// ═══════════════════════════
+const C_STEPS=[
+  {id:1,lbl:'Enquiry\nForm'},
+  {id:2,lbl:'Visit\nInvoice'},
+  {id:3,lbl:'Staff\nAssigned'},
+  {id:4,lbl:'Inspection\n& Quote'},
+  {id:5,lbl:'Repair\nUnderway'},
+  {id:6,lbl:'Final\nInvoice'},
+  {id:7,lbl:'Ticket\nClosed'},
+];
+let curStep=1;
+
+function renderProg(){
+  document.getElementById('cust-prog').innerHTML=C_STEPS.map(s=>{
+    const cls=s.id<curStep?'done':s.id===curStep?'active':'';
+    return`<div class="ps ${cls}"><div class="ps-dot">${s.id<curStep?'✓':s.id}</div><div class="ps-lbl">${s.lbl.replace('\n','<br>')}</div></div>`;
+  }).join('');
+}
+
+function cStep(n){
+  if(n===2){
+    const outside=document.getElementById('c-city').value.includes('Outstation');
+    document.getElementById('bl-row').style.display=outside?'flex':'none';
+    document.getElementById('inv1-total').textContent=outside?'₹4,500':'₹3,000';
+    document.getElementById('inv1-num').textContent=Math.floor(2000+Math.random()*900);
+  }
+  if(n===6){document.getElementById('inv2-num').textContent=Math.floor(2000+Math.random()*900);}
+  for(let i=1;i<=7;i++){const el=document.getElementById('cs'+i);if(el)el.style.display=i===n?'block':'none';}
+  curStep=n;renderProg();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function getInv1Amt(){return document.getElementById('c-city').value.includes('Outstation')?'4500':'3000';}
+
+function selR(v){
+  ['yes','no','dk'].forEach(k=>document.getElementById('ro-'+k).classList.remove('sel'));
+  document.getElementById('ro-'+v).classList.add('sel');
+}
+
+// Feedback
+const fbVals={overall:4,sup:5,qual:4,time:3};
+function fbRate(cat,n){
+  fbVals[cat]=n;
+  const stars=document.querySelectorAll(`#fb-${cat} .fb-star`);
+  stars.forEach((s,i)=>s.classList.toggle('on',i<n));
+  document.getElementById(`fb-${cat}-lbl`).textContent=n+' / 5';
+}
+function submitFb(){
+  toast('⭐ Feedback submitted! Thank you — Duromax admin has been notified.');
+}
+
+// ═══════════════════════════
+//  PAYMENT GATEWAY
+// ═══════════════════════════
+let pgCb=null,pgMode='UPI · GPay';
+
+function openPG(amt,lbl,step){
+  pgCb=step;
+  const s='₹'+Number(amt).toLocaleString('en-IN');
+  document.getElementById('pg-amt-disp').textContent=s;
+  document.getElementById('pg-btn-amt').textContent=s;
+  document.querySelectorAll('.pg-ba').forEach(el=>el.textContent=s);
+  document.getElementById('pg-ok-msg').textContent=s+' paid successfully.';
+  document.getElementById('txn-id').textContent=Math.floor(1000000+Math.random()*9000000);
+  ['pg-upi','pg-card','pg-nb','pg-proc','pg-ok'].forEach(id=>{
+    const el=document.getElementById(id);el.style.display='none';el.classList.remove('on');
+  });
+  document.getElementById('pg-upi').style.display='block';
+  document.querySelectorAll('.pg-tab').forEach((t,i)=>t.classList.toggle('on',i===0));
+  document.getElementById('pg-tabs').style.display='flex';
+  document.getElementById('pg-overlay').classList.add('open');
+}
+
+function closePG(){
+  document.getElementById('pg-overlay').classList.remove('open');
+  if(pgCb!==null){cStep(pgCb+1);pgCb=null;}
+}
+
+function pgTab(el,p){
+  document.querySelectorAll('.pg-tab').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on');
+  ['pg-upi','pg-card','pg-nb'].forEach(id=>document.getElementById(id).style.display='none');
+  document.getElementById('pg-'+p).style.display='block';
+}
+
+function selUpi(el){document.querySelectorAll('.upi-app').forEach(a=>a.classList.remove('on'));el.classList.add('on');pgMode='UPI · '+el.querySelector('.upi-app-n').textContent;}
+function selBank(el){document.querySelectorAll('.nb-bank').forEach(b=>b.classList.remove('on'));el.classList.add('on');pgMode='Net Banking · '+el.querySelector('.nb-name').textContent;}
+function vfyUpi(){const v=document.getElementById('upi-id').value.trim();if(!v){toast('Enter a UPI ID.');return;}toast('✓ UPI ID verified: '+v);}
+
+function fmtCard(inp){
+  let v=inp.value.replace(/\D/g,'').substring(0,16);
+  inp.value=v.replace(/(.{4})/g,'$1 ').trim();
+  const d=v.padEnd(16,'•');
+  document.getElementById('cv-num').textContent=d.substring(0,4)+' '+d.substring(4,8)+' '+d.substring(8,12)+' '+d.substring(12,16);
+  const brand=v[0]==='4'?'🟦 VISA':v[0]==='5'?'🔴 MC':v.startsWith('34')||v.startsWith('37')?'🟢 AMEX':'💳';
+  document.getElementById('cv-brand').textContent=brand;pgMode='Card · '+brand;
+}
+function fmtExp(inp){
+  let v=inp.value.replace(/\D/g,'');if(v.length>2)v=v.substring(0,2)+'/'+v.substring(2,4);
+  inp.value=v;document.getElementById('cv-exp').textContent=inp.value||'MM / YY';
+}
+
+function procPay(){
+  ['pg-upi','pg-card','pg-nb'].forEach(id=>document.getElementById(id).style.display='none');
+  document.getElementById('pg-tabs').style.display='none';
+  const proc=document.getElementById('pg-proc');proc.style.display='block';proc.classList.add('on');
+  document.getElementById('pay-mode').textContent=pgMode;
+  setTimeout(()=>{
+    proc.style.display='none';proc.classList.remove('on');
+    const ok=document.getElementById('pg-ok');ok.style.display='block';ok.classList.add('on');
+  },2000);
+}
+
+// ═══════════════════════════
+//  ADMIN DATA
+// ═══════════════════════════
+const TICKETS=[
+  {id:'DX-2041',name:'Priya Mehta',issue:'Sliding door not closing',status:'new',phone:'+91 98100 11234',addr:'Sector 56, Gurugram',date:'25 Mar 2026',inst:'Yes',city:'Delhi NCR',tl:['new'],fb:null},
+  {id:'DX-2040',name:'Arvind Nair',issue:'Window handle broken',status:'invoiced',phone:'+91 99200 44312',addr:'Noida Sector 18',date:'24 Mar 2026',inst:'Yes',city:'Delhi NCR',tl:['new','invoiced'],fb:null},
+  {id:'DX-2038',name:'Sunita Sharma',issue:'Casement window leaking',status:'scheduled',phone:'+91 87654 32100',addr:'Rohini, Delhi',date:'22 Mar 2026',inst:'No',city:'Delhi NCR',tl:['new','invoiced','paid','scheduled'],fb:null},
+  {id:'DX-2036',name:'Rakesh Gupta',issue:'Door not closing — hinges loose',status:'repair',phone:'+91 98712 34567',addr:'Dwarka, Delhi',date:'21 Mar 2026',inst:'Yes',city:'Delhi NCR',tl:['new','invoiced','paid','scheduled','visited','approved','repair'],fb:null},
+  {id:'DX-2034',name:'Anjali Verma',issue:'All bedroom windows — seal damaged',status:'finalinv',phone:'+91 87000 56789',addr:'Vasant Kunj, Delhi',date:'19 Mar 2026',inst:'Yes',city:'Delhi NCR',tl:['new','invoiced','paid','scheduled','visited','approved','repair','finalinv'],fb:null},
+  {id:'DX-2031',name:'Mohammed Irfan',issue:'Door hinge misaligned',status:'closed',phone:'+91 90000 12345',addr:'Lajpat Nagar, Delhi',date:'15 Mar 2026',inst:'Yes',city:'Delhi NCR',tl:['new','invoiced','paid','scheduled','visited','approved','repair','finalinv','closed'],fb:{overall:4,sup:5,qual:4,time:3,comment:'Good service overall, supervisor was very professional.'}},
+];
+
+const SMAP={
+  new:['bdg-amber','New — Invoice Pending'],
+  invoiced:['bdg-gold','Invoice Sent'],
+  paid:['bdg-teal','Paid — Assign Supervisor'],
+  scheduled:['bdg-coral','Supervisor Assigned'],
+  visited:['bdg-blue','Visited — Quote Pending'],
+  approved:['bdg-purple','Quote Approved'],
+  repair:['bdg-blue','In Repair'],
+  finalinv:['bdg-amber','Final Invoice Pending'],
+  closed:['bdg-teal','Closed'],
+};
+// patch missing bdg-gold
+document.head.insertAdjacentHTML('beforeend','<style>.bdg-gold{background:var(--gold-l);color:var(--gold);}</style>');
+
+let selTkt=null;
+
+function aChip(el,f){
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+  let list=TICKETS;
+  if(f!=='all') list=TICKETS.filter(t=>t.status===f);
+  renderAList(list);
+  document.getElementById('adm-detail').innerHTML=`<div class="card" style="text-align:center;padding:50px 24px;color:var(--muted);"><div style="font-size:32px;margin-bottom:9px;">📋</div><div style="font-size:14px;font-weight:600;">Select a ticket</div></div>`;
+}
+
+function renderAList(list){
+  document.getElementById('adm-list').innerHTML=list.map(t=>{
+    const[cls,lbl]=SMAP[t.status]||['bdg-gray',t.status];
+    return`<div class="tkt" id="ti-${t.id}" onclick="selTkt2('${t.id}')">
+      <div class="tkt-id">${t.id} · ${t.date}</div>
+      <div class="tkt-name">${t.name}</div>
+      <div class="tkt-issue">${t.issue}</div>
+      <div class="tkt-ft">
+        <span style="font-size:10px;color:var(--muted);">${t.city}</span>
+        <span class="bdg ${cls}" style="font-size:9.5px;padding:2px 7px;">${lbl}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function selTkt2(id){
+  selTkt=TICKETS.find(t=>t.id===id);
+  document.querySelectorAll('.tkt').forEach(el=>el.classList.remove('sel'));
+  const el=document.getElementById('ti-'+id);if(el)el.classList.add('sel');
+  renderADetail();
+}
+
+function renderADetail(){
+  const t=selTkt;if(!t)return;
+  const[cls,lbl]=SMAP[t.status]||['bdg-gray',t.status];
+
+  const TL_EVENTS=[
+    {ico:'📋',lbl:'Enquiry form submitted',done:true},
+    {ico:'🧾',lbl:'Site visit invoice raised (₹3,000)',done:t.tl.includes('invoiced')},
+    {ico:'💳',lbl:'Visit charges paid — admin & accounts notified',done:t.tl.includes('paid')},
+    {ico:'👤',lbl:'Supervisor assigned (48-hr SLA)',done:t.tl.includes('scheduled')},
+    {ico:'🔍',lbl:'Supervisor site visit — inspection & report filed',done:t.tl.includes('visited')},
+    {ico:'✅',lbl:'Customer approved spare parts quote',done:t.tl.includes('approved')},
+    {ico:'🔧',lbl:'Installer assigned — repair & handover done',done:t.tl.includes('repair')},
+    {ico:'🧾',lbl:'Final invoice raised (parts + labour)',done:t.tl.includes('finalinv')},
+    {ico:'💳',lbl:'Final payment received — ticket closed',done:t.tl.includes('closed')},
+  ];
+
+  const tlHTML=TL_EVENTS.map(e=>`
+    <div class="tl-r">
+      <div class="tl-i" style="background:${e.done?'var(--teal-l)':'var(--bg)'};border:1px solid ${e.done?'var(--teal-m)':'var(--border)'};">${e.done?e.ico:'○'}</div>
+      <div><div class="tl-t" style="color:${e.done?'var(--ink)':'var(--muted)'};">${e.lbl}</div><div class="tl-d">${e.done?t.date:'Pending'}</div></div>
+    </div>`).join('');
+
+  // SLA
+  const slaHrs={new:2,invoiced:8,scheduled:12,repair:36,finalinv:42}[t.status]||48;
+  const slaPct=Math.min(100,Math.round((slaHrs/48)*100));
+  const slaCol=slaPct<50?'var(--teal-m)':slaPct<80?'var(--gold-m)':'var(--coral)';
+
+  // Feedback section for closed tickets
+  let fbHTML='';
+  if(t.status==='closed'&&t.fb){
+    const f=t.fb;
+    fbHTML=`<div class="dl-sec" style="margin-top:16px;">
+      <h4>Customer Feedback</h4>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:10px;">
+        ${[['Overall Service',f.overall],['Supervisor',f.sup],['Repair Quality',f.qual],['Timeliness',f.time]].map(([k,v])=>`
+        <div style="background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:9px 11px;">
+          <div style="font-size:9px;font-weight:700;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;margin-bottom:3px;">${k}</div>
+          <div style="display:flex;align-items:center;gap:4px;">
+            <span style="font-size:16px;color:#E9A825;">${'★'.repeat(v)}<span style="color:var(--border);">${'★'.repeat(5-v)}</span></span>
+            <span style="font-size:12px;font-weight:700;color:var(--gold);">${v}/5</span>
+          </div>
+        </div>`).join('')}
+      </div>
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:9px 11px;font-size:12.5px;color:var(--ink);font-style:italic;">"${f.comment}"</div>
+    </div>`;
+  }
+
+  // Action buttons
+  let acts='';
+  if(t.status==='new') acts=`<button class="btn btn-gold btn-sm" onclick="openInvModal('Visit Site Invoice','3000')">🧾 Raise Invoice</button><button class="btn btn-outline btn-sm" onclick="toast('Reminder sent!')">Send Reminder</button>`;
+  else if(t.status==='invoiced') acts=`<button class="btn btn-outline btn-sm" onclick="toast('Invoice resent via WhatsApp!')">Resend Invoice</button>`;
+  else if(t.status==='paid'||t.status==='scheduled') acts=`<button class="btn btn-teal btn-sm" onclick="document.getElementById('m-sup').classList.add('open')">👤 Assign Field Staff</button>`;
+  else if(t.status==='visited') acts=`<button class="btn btn-gold btn-sm" onclick="openInvModal('Spare Parts + Labour Invoice','2600')">🧾 Raise Parts Invoice</button>`;
+  else if(t.status==='repair') acts=`<button class="btn btn-gold btn-sm" onclick="openInvModal('Final Invoice (Parts + Labour)','3068')">🧾 Raise Final Invoice</button>`;
+  else if(t.status==='finalinv') acts=`<button class="btn btn-teal btn-sm" onclick="markClosed()">✅ Mark Closed</button>`;
+  else acts=`
+    <button class="btn btn-outline btn-sm" onclick="toast('Receipt downloaded.')">📄 Receipt</button>
+    <button class="btn btn-outline btn-sm" onclick="toast('Warranty cert downloaded.')">🛡️ Warranty</button>
+    ${t.fb?'<button class="btn btn-outline btn-sm" onclick="toast(\'Feedback already received.\')">⭐ Feedback Received</button>':'<button class="btn btn-teal btn-sm" onclick="sendFeedbackLink(\''+t.id+'\')">⭐ Send Feedback Link</button>'}
+  `;
+
+  document.getElementById('adm-detail').innerHTML=`
+    <div class="card">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:10px;">
+        <div>
+          <div style="font-size:9.5px;font-weight:700;letter-spacing:.06em;color:var(--muted);text-transform:uppercase;">${t.id}</div>
+          <div style="font-family:'DM Serif Display',serif;font-size:19px;margin:3px 0 0;">${t.name}</div>
+        </div>
+        <span class="bdg ${cls}">${lbl}</span>
+      </div>
+      <div class="dl-sec">
+        <h4>Enquiry Details</h4>
+        <div class="dl-row"><span>Phone</span><span>${t.phone}</span></div>
+        <div class="dl-row"><span>Address</span><span>${t.addr}</span></div>
+        <div class="dl-row"><span>Issue</span><span>${t.issue}</span></div>
+        <div class="dl-row"><span>Duromax Install</span><span>${t.inst}</span></div>
+        <div class="dl-row"><span>Region</span><span>${t.city}</span></div>
+        <div class="dl-row"><span>Submitted</span><span>${t.date}</span></div>
+      </div>
+      <div class="dl-sec">
+        <h4>SLA Tracker</h4>
+        <div class="sla-w" style="margin-top:0;">
+          <div class="sla-lbl"><span>Time Elapsed</span><span>${slaHrs} hrs / 48 hrs SLA</span></div>
+          <div class="sla-bar"><div class="sla-fill" style="width:${slaPct}%;background:${slaCol};"></div></div>
+        </div>
+      </div>
+      <div class="dl-sec">
+        <h4>Activity Timeline</h4>
+        <div class="tl">${tlHTML}</div>
+      </div>
+      ${fbHTML}
+      <div class="act-row">${acts}</div>
+    </div>`;
+}
+
+function openInvModal(desc,amt){
+  document.getElementById('m-inv-desc').textContent=desc+' for ticket '+selTkt?.id;
+  document.getElementById('m-inv-amt').value=amt;
+  document.getElementById('m-inv').classList.add('open');
+}
+function confirmInv(){
+  closeM('m-inv');
+  const amt=document.getElementById('m-inv-amt').value;
+  if(selTkt){
+    if(selTkt.status==='new'){selTkt.status='invoiced';selTkt.tl.push('invoiced');}
+    else if(selTkt.status==='repair'){selTkt.status='finalinv';selTkt.tl.push('finalinv');}
+    else if(selTkt.status==='visited'){selTkt.status='repair';selTkt.tl.push('approved','repair');}
+  }
+  renderAList(TICKETS);renderADetail();
+  toast('🧾 Invoice of ₹'+Number(amt).toLocaleString('en-IN')+' raised & sent via WhatsApp!');
+}
+function confirmSup(){
+  closeM('m-sup');
+  if(selTkt){selTkt.status='scheduled';if(!selTkt.tl.includes('paid'))selTkt.tl.push('paid');selTkt.tl.push('scheduled');}
+  renderAList(TICKETS);renderADetail();
+  toast('Supervisor assigned & visit details sent via WhatsApp!');
+}
+function confirmInst(){
+  closeM('m-inst');
+  if(selTkt){selTkt.status='repair';selTkt.tl.push('approved','repair');}
+  renderAList(TICKETS);renderADetail();
+  toast('Installer assigned & job details sent via WhatsApp!');
+}
+function markClosed(){
+  if(selTkt){selTkt.status='closed';selTkt.tl.push('closed');}
+  renderAList(TICKETS);renderADetail();
+  toast('✅ Ticket closed! Warranty & receipt sent to customer.');
+}
+function sendFeedbackLink(id){
+  const t=TICKETS.find(x=>x.id===id);
+  if(t){t.fb={overall:4,sup:5,qual:4,time:3,comment:'Feedback pending...',pending:true};}
+  renderADetail();
+  toast('⭐ Feedback link sent to customer via WhatsApp!');
+}
+
+// ═══════════════════════════
+//  SUPERVISOR FLOW
+// ═══════════════════════════
+const SUP_VISITS=[
+  {id:'DX-2041',name:'Priya Mehta',issue:'Sliding door not closing',addr:'Sector 56, Gurugram',time:'10:00 AM',date:'29 Mar 2026',status:'pending'},
+  {id:'DX-2038',name:'Sunita Sharma',issue:'Casement window leaking',addr:'Rohini, Delhi',time:'2:00 PM',date:'29 Mar 2026',status:'pending'},
+  {id:'DX-2031',name:'Mohammed Irfan',issue:'Door hinge misaligned',addr:'Lajpat Nagar, Delhi',time:'11:00 AM',date:'28 Mar 2026',status:'reported'},
+];
+let selVisit=null,cSigned=false,sSigned=false;
+
+function renderSList(){
+  document.getElementById('sup-list').innerHTML=SUP_VISITS.map(v=>`
+    <div class="tkt" id="sv-${v.id}" onclick="selSup('${v.id}')">
+      <div class="tkt-id">${v.id} · ${v.date}</div>
+      <div class="tkt-name">${v.name}</div>
+      <div class="tkt-issue">${v.issue}</div>
+      <div class="tkt-ft">
+        <span style="font-size:10px;color:var(--muted);">⏰ ${v.time}</span>
+        <span class="bdg ${v.status==='reported'?'bdg-teal':'bdg-amber'}" style="font-size:9.5px;padding:2px 7px;">${v.status==='reported'?'✓ Reported':'Pending'}</span>
+      </div>
+    </div>`).join('');
+}
+
+function selSup(id){
+  selVisit=SUP_VISITS.find(v=>v.id===id);
+  cSigned=false;sSigned=false;
+  document.querySelectorAll('.tkt').forEach(el=>el.classList.remove('sel'));
+  const el=document.getElementById('sv-'+id);if(el)el.classList.add('sel');
+  renderSDetail();
+}
+
+function renderSDetail(){
+  const v=selVisit;if(!v)return;
+  document.getElementById('sup-detail').innerHTML=`
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;">
+        <div>
+          <div style="font-size:9.5px;font-weight:700;letter-spacing:.06em;color:var(--muted);text-transform:uppercase;">${v.id}</div>
+          <div style="font-family:'DM Serif Display',serif;font-size:18px;margin:3px 0 0;">${v.name}</div>
+        </div>
+        <span class="bdg bdg-coral">🔍 Site Visit</span>
+      </div>
+      <div class="pcard" style="margin-bottom:14px;">
+        <div class="av" style="background:var(--blue);font-size:17px;">📍</div>
+        <div>
+          <div class="pname">${v.addr}</div>
+          <div class="psub">📅 ${v.date} · ⏰ ${v.time}</div>
+          <div class="psub" style="margin-top:2px;">Issue: ${v.issue}</div>
+        </div>
+      </div>
+
+      <div style="font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">Site Visit Form</div>
+      <div class="fg2" style="margin-bottom:10px;">
+        <div class="fg" style="margin-bottom:0;"><label class="lbl">Date of Visit</label><input type="date" value="2026-03-29"/></div>
+        <div class="fg" style="margin-bottom:0;"><label class="lbl">Client Name</label><input value="${v.name}" readonly style="background:#f5f5f2;"/></div>
+      </div>
+      <div class="fg2" style="margin-bottom:10px;">
+        <div class="fg" style="margin-bottom:0;"><label class="lbl">Mobile</label><input placeholder="+91 98100 11234"/></div>
+        <div class="fg" style="margin-bottom:0;"><label class="lbl">Site Address</label><input value="${v.addr}" readonly style="background:#f5f5f2;"/></div>
+      </div>
+      <div class="fg" style="margin-bottom:10px;"><label class="lbl">Description of Complaint by Client</label><textarea placeholder="What did the client report?">${v.issue}</textarea></div>
+      <div class="fg" style="margin-bottom:10px;"><label class="lbl">Observations by Supervisor</label><textarea placeholder="What did you actually find on inspection?"></textarea></div>
+
+      <div style="font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:12px 0 6px;">Spare Parts Required</div>
+      <table class="ptbl">
+        <tr><th>S.No</th><th>Article Name</th><th>Article No.</th><th>Qty</th><th>Remarks</th></tr>
+        <tr>
+          <td>1</td>
+          <td><input class="ptbl-input" placeholder="e.g. Weather Strip"/></td>
+          <td><input class="ptbl-input" placeholder="WS-75-A" style="width:80px;"/></td>
+          <td><input class="ptbl-input" type="number" placeholder="2" style="width:50px;"/></td>
+          <td><input class="ptbl-input" placeholder="In stock"/></td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td><input class="ptbl-input" placeholder="e.g. Roller Set"/></td>
+          <td><input class="ptbl-input" placeholder="RS-75-B" style="width:80px;"/></td>
+          <td><input class="ptbl-input" type="number" placeholder="1" style="width:50px;"/></td>
+          <td><input class="ptbl-input" placeholder="In stock"/></td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td><input class="ptbl-input" placeholder="Add part…"/></td>
+          <td><input class="ptbl-input" placeholder="—" style="width:80px;"/></td>
+          <td><input class="ptbl-input" type="number" placeholder="" style="width:50px;"/></td>
+          <td><input class="ptbl-input" placeholder=""/></td>
+        </tr>
+      </table>
+
+      <div class="fg" style="margin-top:12px;margin-bottom:10px;"><label class="lbl">Additional Remarks</label><textarea placeholder="Any special notes for admin or installer…" style="min-height:52px;"></textarea></div>
+
+      <!-- SITE PHOTO UPLOAD -->
+      <div style="background:var(--blue-l);border:1px solid #B8D0F5;border-radius:10px;padding:13px 15px;margin:14px 0;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--blue);margin-bottom:10px;">📷 Site Photos (Upload by Supervisor)</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px;" id="photo-preview-sup">
+          <div style="border:1.5px dashed #B8D0F5;border-radius:7px;height:70px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;background:#fff;font-size:11px;color:var(--blue);" onclick="simPhotoUpload('sup',0)">📷<br/>Before</div>
+          <div style="border:1.5px dashed #B8D0F5;border-radius:7px;height:70px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;background:#fff;font-size:11px;color:var(--blue);" onclick="simPhotoUpload('sup',1)">📷<br/>Issue Close-up</div>
+          <div style="border:1.5px dashed #B8D0F5;border-radius:7px;height:70px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;background:#fff;font-size:11px;color:var(--blue);" onclick="simPhotoUpload('sup',2)">📷<br/>+ Add More</div>
+        </div>
+        <div style="font-size:11px;color:var(--blue);opacity:.7;">Upload clear photos of the problem area. These will be visible to admin and the customer.</div>
+      </div>
+
+      <!-- PHYSICAL SIGN-OFF FORM UPLOAD -->
+      <div style="background:var(--teal-l);border:1px solid #A8DFC0;border-radius:10px;padding:13px 15px;margin:14px 0;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--teal);margin-bottom:6px;">📝 Physical Sign-Off Form</div>
+        <p style="font-size:11.5px;color:var(--teal-d);margin-bottom:10px;">After completing the visit, get the customer's physical signature on the Duromax sign-off form. Then upload the signed form here.</p>
+        <div id="signoff-upload-box-sup" style="border:1.5px dashed #A8DFC0;border-radius:7px;padding:14px;text-align:center;cursor:pointer;background:#fff;" onclick="simSignoffUpload('sup')">
+          <div style="font-size:22px;margin-bottom:4px;">📄</div>
+          <div style="font-size:12px;font-weight:700;color:var(--teal);">Upload Signed Form</div>
+          <div style="font-size:10.5px;color:var(--muted);margin-top:2px;">JPG, PNG or PDF · Max 5MB</div>
+        </div>
+        <div id="signoff-status-sup" style="display:none;margin-top:8px;padding:8px 11px;background:var(--teal-l);border:1px solid var(--teal-m);border-radius:7px;font-size:12px;color:var(--teal);font-weight:700;">✅ Sign-off form uploaded successfully</div>
+      </div>
+
+      <div class="btns" style="margin-top:14px;">
+        <button class="btn btn-outline btn-sm" onclick="toast('Report saved as draft.')">Save Draft</button>
+        <button class="btn btn-coral btn-sm" onclick="toast('⚠️ Escalated to admin.')">⚠️ Escalate</button>
+        <button class="btn btn-teal btn-sm" onclick="submitReport()">Submit Report →</button>
+      </div>
+    </div>`;
+}
+
+function doSign(who){
+  if(who==='s'){sSigned=true;const el=document.getElementById('s-sign');if(el){el.textContent='✅ Supervisor Signed';el.classList.add('signed');}toast('Supervisor signature captured.');}
+  else{cSigned=true;const el=document.getElementById('c-sign');if(el){el.textContent='✅ Client Signed';el.classList.add('signed');}toast('Client signature captured.');}
+}
+function submitReport(){
+  if(selVisit)selVisit.status='reported';
+  renderSList();
+  document.getElementById('sup-detail').innerHTML=`
+    <div class="card" style="text-align:center;padding:36px 22px;">
+      <div style="font-size:40px;margin-bottom:9px;">✅</div>
+      <div style="font-family:'DM Serif Display',serif;font-size:18px;margin-bottom:8px;">Report Submitted</div>
+      <p style="font-size:12.5px;color:var(--muted);margin:0 auto 14px;max-width:320px;">Site visit report sent to admin. Admin will generate the spare parts quote for customer approval.</p>
+      <div class="wa" style="text-align:left;"><div style="font-size:17px;flex-shrink:0;">💬</div><div class="wa-b"><strong>WhatsApp Sent</strong>Admin &amp; client notified. Admin will raise spare parts invoice after client approval.</div></div>
+    </div>`;
+  toast('Report submitted! Admin notified.');
+}
+
+function simPhotoUpload(role,idx){
+  toast('📷 Photo '+(idx+1)+' uploaded successfully!');
+}
+function simSignoffUpload(role){
+  const box=document.getElementById('signoff-upload-box-'+role);
+  const status=document.getElementById('signoff-status-'+role);
+  if(box)box.style.display='none';
+  if(status)status.style.display='block';
+  toast('📄 Physical sign-off form uploaded!');
+}
+function setStaffType(type){
+  document.getElementById('staff-sup-opt').classList.toggle('sel',type==='supervisor');
+  document.getElementById('staff-inst-opt').classList.toggle('sel',type==='installer');
+  document.getElementById('staff-sup-section').style.display=type==='supervisor'?'block':'none';
+  document.getElementById('staff-inst-section').style.display=type==='installer'?'block':'none';
+}
+
+// ═══════════════════════════
+//  UTILITIES
+// ═══════════════════════════
+function switchRole(role,btn){
+  document.querySelectorAll('.rtab').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  ['customer','admin','supervisor','installer'].forEach(r=>document.getElementById('view-'+r).classList.toggle('on',r===role));
+}
+function closeM(id){document.getElementById(id).classList.remove('open');}
+function toast(msg){
+  const el=document.getElementById('toast-el');el.textContent=msg;el.classList.add('on');
+  setTimeout(()=>el.classList.remove('on'),3200);
+}
+
+// ═══════════════════════════
+//  INSTALLER FLOW
+// ═══════════════════════════
+const INST_JOBS=[
+  {id:'DX-2036',name:'Rakesh Gupta',issue:'Door not closing — hinges loose',addr:'Dwarka, Delhi',time:'11:00 AM',date:'29 Mar 2026',status:'pending',parts:[{name:'Hinge Set',art:'HG-90-A',qty:2},{name:'Locking Strip',art:'LS-40-B',qty:1}]},
+  {id:'DX-2034',name:'Anjali Verma',issue:'All bedroom windows — seal damaged',addr:'Vasant Kunj, Delhi',time:'2:30 PM',date:'29 Mar 2026',status:'pending',parts:[{name:'UPVC Seal Strip',art:'SS-60-C',qty:6}]},
+  {id:'DX-2031',name:'Mohammed Irfan',issue:'Door hinge misaligned',addr:'Lajpat Nagar, Delhi',time:'10:00 AM',date:'28 Mar 2026',status:'done',parts:[]},
+];
+let selJob=null;
+
+function renderInstList(){
+  document.getElementById('inst-list').innerHTML=INST_JOBS.map(j=>`
+    <div class="tkt" id="jb-${j.id}" onclick="selInst('${j.id}')">
+      <div class="tkt-id">${j.id} · ${j.date}</div>
+      <div class="tkt-name">${j.name}</div>
+      <div class="tkt-issue">${j.issue}</div>
+      <div class="tkt-ft">
+        <span style="font-size:10px;color:var(--muted);">⏰ ${j.time}</span>
+        <span class="bdg ${j.status==='done'?'bdg-teal':'bdg-blue'}" style="font-size:9.5px;padding:2px 7px;">${j.status==='done'?'✓ Done':'Pending'}</span>
+      </div>
+    </div>`).join('');
+}
+
+function selInst(id){
+  selJob=INST_JOBS.find(j=>j.id===id);
+  document.querySelectorAll('.tkt').forEach(el=>el.classList.remove('sel'));
+  const el=document.getElementById('jb-'+id);if(el)el.classList.add('sel');
+  renderInstDetail();
+}
+
+function renderInstDetail(){
+  const j=selJob;if(!j)return;
+  const partsRows=j.parts.map((p,i)=>`<tr><td>${i+1}</td><td>${p.name}</td><td>${p.art}</td><td>${p.qty}</td></tr>`).join('') || '<tr><td colspan="4" style="color:var(--muted);font-size:12px;">Parts to be confirmed on site</td></tr>';
+  document.getElementById('inst-detail').innerHTML=`
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;">
+        <div>
+          <div style="font-size:9.5px;font-weight:700;letter-spacing:.06em;color:var(--muted);text-transform:uppercase;">${j.id}</div>
+          <div style="font-family:'DM Serif Display',serif;font-size:18px;margin:3px 0 0;">${j.name}</div>
+        </div>
+        <span class="bdg bdg-blue">🔧 Repair Job</span>
+      </div>
+      <div class="pcard" style="margin-bottom:14px;">
+        <div class="av" style="background:var(--teal);font-size:17px;">📍</div>
+        <div>
+          <div class="pname">${j.addr}</div>
+          <div class="psub">📅 ${j.date} · ⏰ ${j.time}</div>
+          <div class="psub" style="margin-top:2px;">Job: ${j.issue}</div>
+        </div>
+      </div>
+
+      <div style="font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:0 0 6px;">Approved Parts List</div>
+      <table class="ptbl" style="margin-bottom:14px;">
+        <tr><th>S.No</th><th>Article</th><th>Article No.</th><th>Qty</th></tr>
+        ${partsRows}
+      </table>
+
+      <div class="fg" style="margin-bottom:12px;"><label class="lbl">Work Done — Description</label><textarea placeholder="Describe what was repaired or replaced on site…" style="min-height:68px;"></textarea></div>
+      <div class="fg" style="margin-bottom:12px;"><label class="lbl">Remarks / Issues Found</label><textarea placeholder="Any unexpected issues or additional observations…" style="min-height:52px;"></textarea></div>
+
+      <!-- SITE PHOTO UPLOAD (Installer) -->
+      <div style="background:var(--blue-l);border:1px solid #B8D0F5;border-radius:10px;padding:13px 15px;margin:14px 0;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--blue);margin-bottom:10px;">📷 Site Photos — Before &amp; After (Upload by Installer)</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:10px;">
+          <div style="border:1.5px dashed #B8D0F5;border-radius:7px;height:65px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;background:#fff;font-size:10.5px;color:var(--blue);" onclick="simPhotoUpload('inst',0)">📷<br/>Before</div>
+          <div style="border:1.5px dashed #B8D0F5;border-radius:7px;height:65px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;background:#fff;font-size:10.5px;color:var(--blue);" onclick="simPhotoUpload('inst',1)">📷<br/>After</div>
+          <div style="border:1.5px dashed #B8D0F5;border-radius:7px;height:65px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;background:#fff;font-size:10.5px;color:var(--blue);" onclick="simPhotoUpload('inst',2)">📷<br/>Parts Used</div>
+          <div style="border:1.5px dashed #B8D0F5;border-radius:7px;height:65px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;background:#fff;font-size:10.5px;color:var(--blue);" onclick="simPhotoUpload('inst',3)">📷<br/>+ More</div>
+        </div>
+        <div style="font-size:11px;color:var(--blue);opacity:.7;">Upload before &amp; after photos. These are visible to admin and the customer.</div>
+      </div>
+
+      <!-- PHYSICAL SIGN-OFF FORM UPLOAD (Installer) -->
+      <div style="background:var(--teal-l);border:1px solid #A8DFC0;border-radius:10px;padding:13px 15px;margin:14px 0;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--teal);margin-bottom:6px;">📝 Physical Customer Sign-Off Form</div>
+        <p style="font-size:11.5px;color:var(--teal-d);margin-bottom:10px;">After completing the repair and the customer is satisfied, collect their physical signature on the Duromax handover &amp; sign-off form. Upload the signed form below.</p>
+        <div id="signoff-upload-box-inst" style="border:1.5px dashed #A8DFC0;border-radius:7px;padding:14px;text-align:center;cursor:pointer;background:#fff;" onclick="simSignoffUpload('inst')">
+          <div style="font-size:22px;margin-bottom:4px;">📄</div>
+          <div style="font-size:12px;font-weight:700;color:var(--teal);">Upload Signed Handover Form</div>
+          <div style="font-size:10.5px;color:var(--muted);margin-top:2px;">JPG, PNG or PDF · Max 5MB</div>
+        </div>
+        <div id="signoff-status-inst" style="display:none;margin-top:8px;padding:8px 11px;background:var(--teal-l);border:1px solid var(--teal-m);border-radius:7px;font-size:12px;color:var(--teal);font-weight:700;">✅ Handover form uploaded successfully</div>
+      </div>
+
+      <div class="btns" style="margin-top:14px;">
+        <button class="btn btn-outline btn-sm" onclick="toast('Job saved as draft.')">Save Draft</button>
+        <button class="btn btn-coral btn-sm" onclick="toast('⚠️ Escalated to admin.')">⚠️ Escalate</button>
+        <button class="btn btn-teal btn-sm" onclick="submitInstJob('${j.id}')">Mark Complete &amp; Submit →</button>
+      </div>
+    </div>`;
+}
+
+function submitInstJob(id){
+  const j=INST_JOBS.find(x=>x.id===id);
+  if(j)j.status='done';
+  renderInstList();
+  document.getElementById('inst-detail').innerHTML=`
+    <div class="card" style="text-align:center;padding:36px 22px;">
+      <div style="font-size:40px;margin-bottom:9px;">✅</div>
+      <div style="font-family:'DM Serif Display',serif;font-size:18px;margin-bottom:8px;">Job Completed</div>
+      <p style="font-size:12.5px;color:var(--muted);margin:0 auto 14px;max-width:320px;">Repair marked complete. Admin has been notified and will raise the final invoice.</p>
+      <div class="wa" style="text-align:left;"><div style="font-size:17px;flex-shrink:0;">💬</div><div class="wa-b"><strong>WhatsApp Sent</strong>Admin notified. Final invoice will be raised for customer payment.</div></div>
+    </div>`;
+  toast('Job submitted! Admin notified.');
+}
+
+// ── INIT ──
+renderProg();
+renderAList(TICKETS);
+renderSList();
+renderInstList();
+</script>
+</body>
+</html>
