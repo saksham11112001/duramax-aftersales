@@ -23,10 +23,11 @@ interface Props {
   onMarkVisited: () => void
   onClose: () => void
   onReminder: () => void
+  onSendFeedback: () => void
   actionLoading: boolean
 }
 
-export default function TicketDetail({ ticket, onRaiseInvoice, onAssign, onMarkVisited, onClose, onReminder, actionLoading }: Props) {
+export default function TicketDetail({ ticket, onRaiseInvoice, onAssign, onMarkVisited, onClose, onReminder, onSendFeedback, actionLoading }: Props) {
   const s      = ticket.status
   const alloc  = ticket.supervisor_allocations?.[0]
   const visit  = ticket.site_visits?.[0]
@@ -42,7 +43,6 @@ export default function TicketDetail({ ticket, onRaiseInvoice, onAssign, onMarkV
     </div>
   )
 
-  // PDF download button
   function InvoiceDownloadBtn({ payment, label }: { payment: typeof visitP; label: string }) {
     if (!payment) return null
     const pdfUrl = (payment as typeof payment & { invoice_pdf_url?: string }).invoice_pdf_url
@@ -77,7 +77,6 @@ export default function TicketDetail({ ticket, onRaiseInvoice, onAssign, onMarkV
           <StatusBadge status={ticket.status}/>
         </div>
 
-        {/* Customer photo if attached */}
         {(ticket as typeof ticket & { photo_url?: string }).photo_url && (
           <div style={{ marginTop:10 }}>
             <div style={{ fontSize:10, fontWeight:700, color:'var(--muted)', textTransform:'uppercase', letterSpacing:'.07em', marginBottom:5 }}>Customer Photo</div>
@@ -90,9 +89,35 @@ export default function TicketDetail({ ticket, onRaiseInvoice, onAssign, onMarkV
 
       <div style={{ padding:'14px 18px', display:'flex', flexDirection:'column', gap:13 }}>
 
-        {/* Invoice download buttons */}
+        {/* Invoice downloads */}
         {visitP && <InvoiceDownloadBtn payment={visitP} label="Site Visit Invoice"/>}
         {partsP && <InvoiceDownloadBtn payment={partsP} label="Repair Invoice"/>}
+
+        {/* Site visit evidence (photo + signoff) */}
+        {visit && (visit.site_photo_url || visit.signoff_photo_url) && (
+          <div>
+            <div style={{ fontSize:10, fontWeight:700, color:'var(--muted)', textTransform:'uppercase', letterSpacing:'.08em', marginBottom:7 }}>Site Visit Evidence</div>
+            <div style={{ display:'flex', flexDirection:'column', gap:7 }}>
+              {visit.site_photo_url && (
+                <div>
+                  <div style={{ fontSize:11, fontWeight:600, color:'var(--muted)', marginBottom:4 }}>📷 Site Photo</div>
+                  <a href={visit.site_photo_url} target="_blank" rel="noopener noreferrer">
+                    <img src={visit.site_photo_url} alt="Site visit photo" style={{ width:'100%', maxHeight:160, objectFit:'cover', borderRadius:8, border:'1px solid var(--border)', cursor:'zoom-in' }}/>
+                  </a>
+                </div>
+              )}
+              {visit.signoff_photo_url && (
+                <a href={visit.signoff_photo_url} target="_blank" rel="noopener noreferrer" style={{ display:'flex', alignItems:'center', gap:9, background:'var(--bg)', border:'1px solid var(--border)', borderRadius:8, padding:'9px 12px', textDecoration:'none' }}>
+                  <span style={{ fontSize:20 }}>📄</span>
+                  <div>
+                    <div style={{ fontSize:12, fontWeight:700, color:'var(--ink)' }}>Physical Sign-Off Document</div>
+                    <div style={{ fontSize:10.5, color:'var(--teal)', marginTop:1 }}>Click to view →</div>
+                  </div>
+                </a>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* ACTION ZONE */}
         {s==='new' && (
@@ -114,25 +139,25 @@ export default function TicketDetail({ ticket, onRaiseInvoice, onAssign, onMarkV
         )}
         {s==='paid' && (
           <div style={{ background:'var(--teal-l)', border:'1px solid #9FD8C4', borderRadius:11, padding:'13px 15px' }}>
-            <div style={{ fontSize:10.5, fontWeight:700, color:'var(--teal)', textTransform:'uppercase', letterSpacing:'.07em', marginBottom:5 }}>Payment Confirmed — Assign Supervisor</div>
-            <p style={{ fontSize:12.5, color:'var(--teal)', marginBottom:8 }}>Visit fee received. Assign a supervisor to inspect the site within 48 hours.</p>
-            {notifBox('🔔','As soon as you assign, supervisor receives an automatic WhatsApp with site details, complaint and visit schedule.','#EEF4FF','#B5D4F4','#0C447C')}
-            <div style={{ marginTop:11 }}><Btn label="🔧 Assign Supervisor →" onClick={()=>onAssign('supervisor')} disabled={actionLoading}/></div>
+            <div style={{ fontSize:10.5, fontWeight:700, color:'var(--teal)', textTransform:'uppercase', letterSpacing:'.07em', marginBottom:5 }}>Payment Confirmed — Assign Field Staff</div>
+            <p style={{ fontSize:12.5, color:'var(--teal)', marginBottom:8 }}>Visit fee received. Assign any supervisor or installer to this ticket.</p>
+            {notifBox('🔔','As soon as you assign, the staff member receives an automatic WhatsApp with site details, complaint and visit schedule.','#EEF4FF','#B5D4F4','#0C447C')}
+            <div style={{ marginTop:11 }}><Btn label="🔧 Assign Field Staff →" onClick={()=>onAssign()} disabled={actionLoading}/></div>
           </div>
         )}
         {s==='scheduled' && alloc && (
           <div style={{ background:'var(--coral-l)', border:'1px solid #F0B4A0', borderRadius:11, padding:'13px 15px' }}>
-            <div style={{ fontSize:10.5, fontWeight:700, color:'var(--coral)', textTransform:'uppercase', letterSpacing:'.07em', marginBottom:8 }}>Supervisor Assigned</div>
+            <div style={{ fontSize:10.5, fontWeight:700, color:'var(--coral)', textTransform:'uppercase', letterSpacing:'.07em', marginBottom:8 }}>Staff Assigned</div>
             <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:10 }}>
               <div style={{ width:38, height:38, background:'var(--coral)', borderRadius:10, display:'flex', alignItems:'center', justifyContent:'center', color:'white', fontFamily:'Georgia,serif', fontSize:17, flexShrink:0 }}>{(alloc.profiles?.full_name?.[0]??'S').toUpperCase()}</div>
               <div>
                 <div style={{ fontSize:13.5, fontWeight:700 }}>{alloc.profiles?.full_name}</div>
-                <div style={{ fontSize:11.5, color:'var(--muted)' }}>📅 {new Date(alloc.visit_date).toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'})} · {alloc.time_slot}</div>
+                <div style={{ fontSize:11.5, color:'var(--muted)' }}>{alloc.profiles?.role} · 📅 {new Date(alloc.visit_date).toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'})} · {alloc.time_slot}</div>
               </div>
             </div>
             <SLABar allocatedAt={alloc.allocated_at} deadline={alloc.sla_deadline} label="Visit SLA"/>
             <div style={{ display:'flex', gap:7, marginTop:10 }}>
-              <SecBtn label="Reassign" onClick={()=>onAssign('supervisor')}/>
+              <SecBtn label="Reassign" onClick={()=>onAssign()}/>
               <Btn label="✓ Mark Visited" onClick={onMarkVisited} disabled={actionLoading}/>
             </div>
           </div>
@@ -153,20 +178,32 @@ export default function TicketDetail({ ticket, onRaiseInvoice, onAssign, onMarkV
         )}
         {s==='parts_paid' && (
           <div style={{ background:'var(--teal-l)', border:'1px solid #9FD8C4', borderRadius:11, padding:'13px 15px' }}>
-            <div style={{ fontSize:10.5, fontWeight:700, color:'var(--teal)', textTransform:'uppercase', letterSpacing:'.07em', marginBottom:5 }}>Repair Approved — Assign Installer</div>
-            <p style={{ fontSize:12.5, color:'var(--teal)', marginBottom:8 }}>{amt(partsP?.amount_paise??0)} received. Assign an installer with the approved parts list.</p>
-            {notifBox('🔔','Installer receives automatic WhatsApp with client address, approved parts list & visit schedule.','#EEF4FF','#B5D4F4','#0C447C')}
-            <div style={{ marginTop:11 }}><Btn label="🛠️ Assign Installer →" onClick={()=>onAssign('installer')} disabled={actionLoading}/></div>
+            <div style={{ fontSize:10.5, fontWeight:700, color:'var(--teal)', textTransform:'uppercase', letterSpacing:'.07em', marginBottom:5 }}>Repair Approved — Assign Field Staff</div>
+            <p style={{ fontSize:12.5, color:'var(--teal)', marginBottom:8 }}>{amt(partsP?.amount_paise??0)} received. Assign any supervisor or installer with the approved parts list.</p>
+            {notifBox('🔔','Staff member receives automatic WhatsApp with client address, approved parts list & visit schedule.','#EEF4FF','#B5D4F4','#0C447C')}
+            <div style={{ marginTop:11 }}><Btn label="🛠️ Assign Field Staff →" onClick={()=>onAssign()} disabled={actionLoading}/></div>
           </div>
         )}
         {s==='closed' && (
           <div style={{ background:'#F0FAF6', border:'1px solid #86EFAC', borderRadius:11, padding:'13px 15px' }}>
-            <div style={{ display:'flex', alignItems:'center', gap:7, marginBottom:5 }}>
+            <div style={{ display:'flex', alignItems:'center', gap:7, marginBottom:8 }}>
               <div style={{ width:20, height:20, background:'#16A34A', borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', color:'white', fontSize:9 }}>✓</div>
               <div style={{ fontSize:13, fontWeight:700, color:'#15803D' }}>Service Complete — Warranty Active</div>
             </div>
-            {fb?.overall_rating && <div style={{ fontSize:13, color:'#16A34A' }}>Rating: {'★'.repeat(fb.overall_rating)}{'☆'.repeat(5-fb.overall_rating)} {fb.overall_rating}/5</div>}
-            {fb?.comment && <div style={{ fontSize:12, color:'#4ADE80', fontStyle:'italic', marginTop:6 }}>"{fb.comment}"</div>}
+            {fb?.overall_rating && <div style={{ fontSize:13, color:'#16A34A', marginBottom:6 }}>Rating: {'★'.repeat(fb.overall_rating)}{'☆'.repeat(5-fb.overall_rating)} {fb.overall_rating}/5</div>}
+            {fb?.comment && <div style={{ fontSize:12, color:'#4ADE80', fontStyle:'italic', marginBottom:10 }}>"{fb.comment}"</div>}
+            {/* Send feedback option — only if not yet submitted */}
+            {!fb?.submitted_at && (
+              <div style={{ borderTop:'1px solid #BBF7D0', paddingTop:10, marginTop:4 }}>
+                <p style={{ fontSize:12, color:'#15803D', marginBottom:8 }}>
+                  {fb?.token ? 'Feedback form ready. Send the link to the customer via WhatsApp.' : 'Send a feedback form to the customer (optional).'}
+                </p>
+                <Btn label="📩 Send Feedback Form" onClick={onSendFeedback} bg="#16A34A" disabled={actionLoading}/>
+              </div>
+            )}
+            {fb?.submitted_at && (
+              <div style={{ fontSize:11, color:'#15803D', marginTop:6 }}>✅ Feedback received on {new Date(fb.submitted_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}</div>
+            )}
           </div>
         )}
 

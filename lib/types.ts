@@ -40,6 +40,8 @@ export interface SiteVisit {
   client_signed:     boolean
   remarks:           string | null
   submitted_at:      string
+  site_photo_url:    string | null
+  signoff_photo_url: string | null
 }
 
 export interface SparePart {

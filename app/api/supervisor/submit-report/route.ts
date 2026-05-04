@@ -13,10 +13,17 @@ export async function POST(request: NextRequest) {
     ticket_id, visit_date, client_complaint, observed_issue,
     urgency_level, est_repair_time, warranty_status,
     supervisor_signed, client_signed, remarks, spare_parts,
+    site_photo_url, signoff_photo_url,
   } = await request.json()
 
   if (!ticket_id || !client_complaint || !observed_issue) {
     return NextResponse.json({ error: 'ticket_id, client_complaint, observed_issue required' }, { status: 400 })
+  }
+  if (!site_photo_url) {
+    return NextResponse.json({ error: 'Site photo is required to prove physical visit' }, { status: 400 })
+  }
+  if (!signoff_photo_url) {
+    return NextResponse.json({ error: 'Physical sign-off document is required' }, { status: 400 })
   }
   if (!supervisor_signed || !client_signed) {
     return NextResponse.json({ error: 'Both supervisor and client must sign off before submitting' }, { status: 400 })
@@ -51,6 +58,8 @@ export async function POST(request: NextRequest) {
       supervisor_signed: true,
       client_signed:     true,
       remarks:           remarks || null,
+      site_photo_url:    site_photo_url,
+      signoff_photo_url: signoff_photo_url,
     })
     .select('id')
     .single()

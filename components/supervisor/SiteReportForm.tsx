@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import SparePartsTable, { SparePart } from './SparePartsTable'
 
 interface Alloc { id:string; visit_date:string; time_slot:string; notes:string|null; tickets:{ id:string; ticket_number:string; client_name:string; client_mobile:string; site_address:string; complaint_description:string } }
@@ -7,6 +7,17 @@ interface Props { allocation:Alloc; onSubmitted:()=>void }
 
 const iS: React.CSSProperties = { width:'100%', padding:'8px 11px', fontSize:13, border:'1.5px solid var(--border)', borderRadius:7, background:'var(--bg)', color:'var(--ink)', outline:'none', transition:'all .18s', fontFamily:'inherit', boxSizing:'border-box' }
 const lS: React.CSSProperties = { display:'block', fontSize:10.5, fontWeight:700, color:'var(--muted)', textTransform:'uppercase', letterSpacing:'.06em', marginBottom:6 }
+
+async function uploadFile(file: File, ticketId: string, fileType: 'site_photo' | 'signoff'): Promise<string> {
+  const fd = new FormData()
+  fd.append('file', file)
+  fd.append('ticket_id', ticketId)
+  fd.append('file_type', fileType)
+  const res = await fetch('/api/supervisor/upload-file', { method:'POST', body:fd })
+  const data = await res.json()
+  if (!res.ok) throw new Error(data.error || 'Upload failed')
+  return data.url as string
+}
 
 export default function SiteReportForm({ allocation, onSubmitted }: Props) {
   const t = allocation.tickets
@@ -20,45 +31,88 @@ export default function SiteReportForm({ allocation, onSubmitted }: Props) {
   const [parts,       setParts]  = useState<SparePart[]>([{article_name:'',article_number:'',quantity:1,unit_price:'',remarks:''}])
   const [supSigned,   setSS]     = useState(false)
   const [custSigned,  setCS]     = useState(false)
-  const [loading,     setL]      = useState(false)
-  const [error,       setE]      = useState('')
+
+  // Site photo state
+  const [sitePhotoUrl,      setSitePhotoUrl]      = useState<string|null>(null)
+  const [sitePhotoPreview,  setSitePhotoPreview]  = useState<string|null>(null)
+  const [sitePhotoLoading,  setSitePhotoLoading]  = useState(false)
+  const sitePhotoRef = useRef<HTMLInputElement>(null)
+
+  // Signoff document state
+  const [signoffUrl,         setSignoffUrl]         = useState<string|null>(null)
+  const [signoffName,        setSignoffName]        = useState<string|null>(null)
+  const [signoffLoading,     setSignoffLoading]     = useState(false)
+  const signoffRef = useRef<HTMLInputElement>(null)
+
+  const [loading, setL] = useState(false)
+  const [error,   setE] = useState('')
 
   const focus = (e: React.FocusEvent<HTMLInputElement|HTMLTextAreaElement|HTMLSelectElement>) => { e.target.style.borderColor='var(--teal)'; e.target.style.background='#fff' }
   const blur  = (e: React.FocusEvent<HTMLInputElement|HTMLTextAreaElement|HTMLSelectElement>) => { e.target.style.borderColor='var(--border)'; e.target.style.background='var(--bg)' }
 
+  async function handleSitePhoto(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setSitePhotoLoading(true); setE('')
+    try {
+      const url = await uploadFile(file, t.id, 'site_photo')
+      setSitePhotoUrl(url)
+      setSitePhotoPreview(URL.createObjectURL(file))
+    } catch (err: unknown) { setE(err instanceof Error ? err.message : 'Photo upload failed') }
+    finally { setSitePhotoLoading(false) }
+  }
+
+  async function handleSignoff(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setSignoffLoading(true); setE('')
+    try {
+      const url = await uploadFile(file, t.id, 'signoff')
+      setSignoffUrl(url)
+      setSignoffName(file.name)
+    } catch (err: unknown) { setE(err instanceof Error ? err.message : 'Signoff upload failed') }
+    finally { setSignoffLoading(false) }
+  }
+
   async function submit() {
     if (!observedIssue.trim()) { setE('Please fill in what you found on inspection.'); return }
-    if (!supSigned||!custSigned) { setE('Both signatures required before submitting.'); return }
+    if (!sitePhotoUrl)         { setE('Site photo is required — please upload a photo proving your physical visit.'); return }
+    if (!signoffUrl)           { setE('Physical sign-off document is required — please upload the signed form.'); return }
+    if (!supSigned || !custSigned) { setE('Both signatures required before submitting.'); return }
     setL(true); setE('')
     try {
-      const res = await fetch('/api/supervisor/submit-report',{
+      const res = await fetch('/api/supervisor/submit-report', {
         method:'POST', headers:{'Content-Type':'application/json'},
         body: JSON.stringify({
-          ticket_id: t.id, visit_date: today,
+          ticket_id:        t.id,
+          visit_date:       today,
           client_complaint: clientComplaint.trim(),
-          observed_issue: observedIssue.trim(),
-          urgency_level: urgency,
-          est_repair_time: repairTime.trim()||null,
-          warranty_status: warrantyStatus,
-          remarks: remarks.trim()||null,
-          supervisor_signed: true, client_signed: true,
-          spare_parts: parts.filter(p=>p.article_name.trim()).map((p,i)=>({
-            article_name: p.article_name.trim(),
-            article_number: p.article_number.trim()||null,
-            quantity: Number(p.quantity)||1,
-            unit_price: p.unit_price?parseFloat(String(p.unit_price)):null,
-            remarks: p.remarks.trim()||null,
+          observed_issue:   observedIssue.trim(),
+          urgency_level:    urgency,
+          est_repair_time:  repairTime.trim() || null,
+          warranty_status:  warrantyStatus,
+          remarks:          remarks.trim() || null,
+          supervisor_signed: true,
+          client_signed:     true,
+          site_photo_url:    sitePhotoUrl,
+          signoff_photo_url: signoffUrl,
+          spare_parts: parts.filter(p=>p.article_name.trim()).map((p) => ({
+            article_name:   p.article_name.trim(),
+            article_number: p.article_number.trim() || null,
+            quantity:       Number(p.quantity) || 1,
+            unit_price:     p.unit_price ? parseFloat(String(p.unit_price)) : null,
+            remarks:        p.remarks.trim() || null,
           })),
         }),
       })
       const data = await res.json()
-      if (!res.ok) throw new Error(data.error||'Submission failed')
+      if (!res.ok) throw new Error(data.error || 'Submission failed')
       onSubmitted()
-    } catch(e:unknown) { setE(e instanceof Error?e.message:'Something went wrong.') }
+    } catch(e: unknown) { setE(e instanceof Error ? e.message : 'Something went wrong.') }
     finally { setL(false) }
   }
 
-  function Card({title,children}: {title:string;children:React.ReactNode}) {
+  function Card({title, children}: {title:string; children:React.ReactNode}) {
     return (
       <div style={{ background:'white', border:'1px solid var(--border)', borderRadius:13, overflow:'hidden', marginBottom:12, boxShadow:'var(--sh)' }}>
         <div style={{ padding:'11px 17px', borderBottom:'1px solid var(--border)', fontSize:13, fontWeight:700, color:'var(--ink)', background:'var(--bg)' }}>{title}</div>
@@ -78,6 +132,39 @@ export default function SiteReportForm({ allocation, onSubmitted }: Props) {
         {allocation.notes && <div style={{ marginTop:8, background:'rgba(255,255,255,.1)', borderRadius:7, padding:'7px 11px', fontSize:12, color:'rgba(255,255,255,.75)' }}>📝 {allocation.notes}</div>}
       </div>
 
+      {/* Site Photo — mandatory */}
+      <Card title="📷 Site Photo (Required)">
+        <p style={{ fontSize:12, color:'var(--muted)', marginBottom:12, lineHeight:1.5 }}>
+          Upload a photo taken at the site showing the issue and/or the site address board. This is mandatory proof of physical visit.
+        </p>
+        {sitePhotoPreview ? (
+          <div>
+            <img src={sitePhotoPreview} alt="Site photo" style={{ width:'100%', maxHeight:200, objectFit:'cover', borderRadius:9, border:'1.5px solid var(--teal)', marginBottom:9 }}/>
+            <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+              <div style={{ fontSize:12, color:'var(--teal)', fontWeight:700 }}>✅ Photo uploaded</div>
+              <button type="button" onClick={()=>{ setSitePhotoUrl(null); setSitePhotoPreview(null); if(sitePhotoRef.current) sitePhotoRef.current.value='' }} style={{ fontSize:11, color:'var(--coral)', background:'none', border:'none', cursor:'pointer', padding:0, fontFamily:'inherit' }}>Change photo</button>
+            </div>
+          </div>
+        ) : (
+          <button type="button" onClick={()=>sitePhotoRef.current?.click()} disabled={sitePhotoLoading} style={{ width:'100%', padding:'20px 16px', border:'2px dashed var(--border)', borderRadius:10, background:'var(--bg)', cursor:'pointer', textAlign:'center', fontFamily:'inherit', transition:'border-color .18s' }}
+            onMouseEnter={e=>(e.currentTarget.style.borderColor='var(--teal)')} onMouseLeave={e=>(e.currentTarget.style.borderColor='var(--border)')}>
+            {sitePhotoLoading ? (
+              <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:8, fontSize:13, color:'var(--muted)' }}>
+                <svg style={{ animation:'spin .7s linear infinite', width:16, height:16 }} viewBox="0 0 24 24" fill="none"><circle opacity=".25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path opacity=".75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/></svg>
+                Uploading…
+              </div>
+            ) : (
+              <>
+                <div style={{ fontSize:28, marginBottom:6 }}>📷</div>
+                <div style={{ fontSize:13, fontWeight:700, color:'var(--ink)', marginBottom:3 }}>Tap to upload site photo</div>
+                <div style={{ fontSize:11, color:'var(--muted)' }}>JPG, PNG, WEBP, HEIC · Max 10MB</div>
+              </>
+            )}
+          </button>
+        )}
+        <input ref={sitePhotoRef} type="file" accept="image/jpeg,image/png,image/webp,image/heic" style={{ display:'none' }} onChange={handleSitePhoto}/>
+      </Card>
+
       <Card title="📋 Visit Report">
         <div style={{ display:'flex', flexDirection:'column', gap:12 }}>
           <div><label style={lS}>Client Complaint</label><textarea style={{ ...iS, resize:'none', minHeight:60 }} value={clientComplaint} onChange={e=>setCC(e.target.value)} onFocus={focus} onBlur={blur}/></div>
@@ -95,6 +182,40 @@ export default function SiteReportForm({ allocation, onSubmitted }: Props) {
         <SparePartsTable parts={parts} onChange={setParts}/>
       </Card>
 
+      {/* Physical Sign-Off Document — mandatory */}
+      <Card title="📄 Physical Sign-Off Document (Required)">
+        <p style={{ fontSize:12, color:'var(--muted)', marginBottom:12, lineHeight:1.5 }}>
+          Upload the signed physical form — a photo or scan of the document signed by the customer acknowledging the visit and inspection.
+        </p>
+        {signoffUrl ? (
+          <div style={{ display:'flex', alignItems:'center', gap:10, padding:'11px 14px', background:'var(--teal-l)', border:'1.5px solid var(--teal)', borderRadius:9 }}>
+            <span style={{ fontSize:22 }}>📄</span>
+            <div style={{ flex:1 }}>
+              <div style={{ fontSize:12, fontWeight:700, color:'var(--teal)' }}>✅ Signoff document uploaded</div>
+              <div style={{ fontSize:11, color:'var(--muted)', marginTop:1 }}>{signoffName}</div>
+            </div>
+            <button type="button" onClick={()=>{ setSignoffUrl(null); setSignoffName(null); if(signoffRef.current) signoffRef.current.value='' }} style={{ fontSize:11, color:'var(--coral)', background:'none', border:'none', cursor:'pointer', padding:0, fontFamily:'inherit' }}>Change</button>
+          </div>
+        ) : (
+          <button type="button" onClick={()=>signoffRef.current?.click()} disabled={signoffLoading} style={{ width:'100%', padding:'20px 16px', border:'2px dashed var(--border)', borderRadius:10, background:'var(--bg)', cursor:'pointer', textAlign:'center', fontFamily:'inherit', transition:'border-color .18s' }}
+            onMouseEnter={e=>(e.currentTarget.style.borderColor='var(--teal)')} onMouseLeave={e=>(e.currentTarget.style.borderColor='var(--border)')}>
+            {signoffLoading ? (
+              <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:8, fontSize:13, color:'var(--muted)' }}>
+                <svg style={{ animation:'spin .7s linear infinite', width:16, height:16 }} viewBox="0 0 24 24" fill="none"><circle opacity=".25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path opacity=".75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/></svg>
+                Uploading…
+              </div>
+            ) : (
+              <>
+                <div style={{ fontSize:28, marginBottom:6 }}>📄</div>
+                <div style={{ fontSize:13, fontWeight:700, color:'var(--ink)', marginBottom:3 }}>Tap to upload signed form</div>
+                <div style={{ fontSize:11, color:'var(--muted)' }}>Photo or scanned PDF · JPG, PNG, PDF · Max 10MB</div>
+              </>
+            )}
+          </button>
+        )}
+        <input ref={signoffRef} type="file" accept="image/jpeg,image/png,image/webp,image/heic,application/pdf" style={{ display:'none' }} onChange={handleSignoff}/>
+      </Card>
+
       <Card title="✏️ Digital Sign-Off">
         <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
           {[{who:'supervisor',l:'Supervisor Sign-Off',signed:supSigned,set:setSS},{who:'customer',l:'Customer Sign-Off',signed:custSigned,set:setCS}].map(s=>(
@@ -105,7 +226,7 @@ export default function SiteReportForm({ allocation, onSubmitted }: Props) {
             </button>
           ))}
         </div>
-        <p style={{ fontSize:12, color:'var(--muted)', textAlign:'center', marginTop:11 }}>Both signatures required before submitting.</p>
+        <p style={{ fontSize:12, color:'var(--muted)', textAlign:'center', marginTop:11 }}>Both confirmations required before submitting.</p>
       </Card>
 
       {error && <div style={{ background:'var(--coral-l)', border:'1px solid #FABDB0', color:'var(--coral)', fontSize:13, padding:'11px 15px', borderRadius:10, marginBottom:12 }}>{error}</div>}

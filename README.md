@@ -124,15 +124,17 @@ duromax-aftercare/
 │       │   ├── send-otp/route.ts           POST trigger SMS OTP via Supabase Auth
 │       │   ├── verify-otp/route.ts         POST verify OTP → create session
 │       │   ├── visits/route.ts             GET supervisor's assigned visits
-│       │   ├── submit-report/route.ts      POST site visit report + spare parts
-│       │   └── stats/route.ts              GET supervisor self-performance stats
+│       │   ├── submit-report/route.ts      POST site visit report + spare parts + photo/signoff URLs
+│       │   ├── upload-file/route.ts        POST authenticated upload (site photo or signoff doc)
+│       │   └── stats/route.ts             GET supervisor self-performance stats
 │       │
 │       └── admin/
 │           ├── invoices/route.ts           POST raise invoice + generate PDF
 │           ├── invoices/mark-paid/route.ts POST regenerate PDF with PAID stamp
-│           ├── allocate-supervisor/route.ts POST assign supervisor/installer
+│           ├── allocate-supervisor/route.ts POST assign any field staff to any eligible ticket
 │           ├── mark-visited/route.ts       POST advance ticket to 'visited'
-│           ├── close-ticket/route.ts       POST close ticket + create feedback token
+│           ├── close-ticket/route.ts       POST close ticket + create feedback token (no auto-send)
+│           ├── send-feedback/route.ts      POST admin-triggered feedback link via WhatsApp
 │           ├── send-reminder/route.ts      POST resend WhatsApp reminder
 │           ├── sla-settings/route.ts       GET + POST editable SLA hours per stage
 │           └── staff/
@@ -147,17 +149,17 @@ duromax-aftercare/
 │   │   └── TicketTimeline.tsx              8-step visual progress timeline
 │   │
 │   ├── admin/
-│   │   ├── AdminDashboard.tsx              Main dashboard (pipeline board, filters, realtime)
-│   │   ├── TicketDetail.tsx                Right panel (action zone + invoice PDF download)
+│   │   ├── AdminDashboard.tsx              Main dashboard (pipeline, filters, realtime, analytics tab)
+│   │   ├── TicketDetail.tsx                Right panel (actions, evidence viewer, Send Feedback button)
 │   │   ├── InvoiceModal.tsx                Raise invoice modal (outstation toggle)
-│   │   ├── AssignModal.tsx                 Assign supervisor/installer (auto-reminder note)
+│   │   ├── AssignModal.tsx                 Assign any field staff (supervisor or installer) to any ticket
 │   │   ├── FeedbackPanel.tsx               Feedback tab with star ratings
 │   │   ├── SLASettingsModal.tsx            ⏱ Edit SLA hours per stage
 │   │   └── StaffManagement.tsx             Add/edit/disable staff + performance stats
 │   │
 │   ├── supervisor/
 │   │   ├── SupervisorDashboard.tsx         3 tabs: Overview / Pending / Completed
-│   │   ├── SiteReportForm.tsx              Inspection report + digital sign-off
+│   │   ├── SiteReportForm.tsx              Inspection report + mandatory site photo + signoff upload
 │   │   └── SparePartsTable.tsx             Dynamic spare parts rows
 │   │
 │   └── shared/
@@ -184,7 +186,8 @@ duromax-aftercare/
 │   │   ├── 002_fix_roles.sql               Remove accounts, add installer role
 │   │   ├── 003_sla_settings.sql            SLA settings table
 │   │   ├── 004_photo_upload.sql            photo_url column on tickets
-│   │   └── 005_invoice_columns.sql         invoice_number, invoice_pdf_url on payments
+│   │   ├── 005_invoice_columns.sql         invoice_number, invoice_pdf_url on payments
+│   │   └── 006_site_visit_fields.sql       site_photo_url, signoff_photo_url on site_visits
 │   ├── set_admin_role.sql                  Set first admin user role
 │   ├── cron_schedules.sql                  pg_cron schedules for edge functions
 │   ├── whatsapp_templates.md               All 9 WhatsApp message templates
@@ -211,9 +214,9 @@ duromax-aftercare/
 | `tickets` | Core service requests. Has `status` enum driving the entire flow. Also has `photo_url`. |
 | `payments` | Razorpay payment records. Has `token` (signed URL), `invoice_number`, `invoice_pdf_url`. |
 | `supervisor_allocations` | Which staff member is assigned to which ticket, visit date/time, SLA deadline. |
-| `site_visits` | Supervisor inspection report (observed issue, urgency, warranty status, sign-offs). |
-| `spare_parts` | Line items from the supervisor's parts list (article name, number, qty, unit price). |
-| `feedback` | Post-closure customer ratings (4 categories). One-time token. |
+| `site_visits` | Field staff inspection report. Has `site_photo_url` (mandatory geo-proof photo) and `signoff_photo_url` (scanned physical sign-off form). |
+| `spare_parts` | Line items from the field staff's parts list (article name, number, qty, unit price). |
+| `feedback` | Post-closure customer ratings (4 categories). One-time token. Created on close; sent to customer only when admin explicitly triggers it. |
 | `notification_log` | Every WhatsApp/email attempt (for debugging). |
 | `sla_settings` | Admin-editable SLA hours per stage. |
 
@@ -257,15 +260,20 @@ new → invoiced → paid → scheduled → visited → parts_invoiced → parts
 | 1 | Customer | Submits enquiry form | `new` |
 | 2 | Admin | Raises site visit invoice | `invoiced` |
 | 3 | Customer | Pays visit fee | `paid` ← auto via webhook |
-| 4 | Admin | Assigns supervisor + date | `scheduled` |
-| 5 | Supervisor | Files inspection report | `visited` ← auto on report submit |
+| 4 | Admin | Assigns any field staff (supervisor or installer) + date | `scheduled` |
+| 5 | Field staff | Files inspection report with **mandatory site photo + scanned signoff form** | `visited` ← auto on report submit |
 | 6 | Admin | Raises repair invoice | `parts_invoiced` |
 | 7 | Customer | Pays repair invoice | `parts_paid` ← auto via webhook |
-| 8 | Admin | Assigns installer | (status stays `parts_paid`, allocation created) |
-| 9 | Installer | Completes repair | (logged in site_visits) |
-| 10 | Admin | Closes ticket | `closed` → feedback link sent |
+| 8 | Admin | Assigns any field staff for repair | (status stays `parts_paid`, allocation created) |
+| 9 | Field staff | Completes repair | (logged in site_visits with photo + signoff) |
+| 10 | Admin | Closes ticket | `closed` |
+| 11 | Admin | (Optional) Sends feedback form to customer | customer receives WhatsApp link |
 
 **Steps 3 and 7 are fully automatic** — Razorpay webhook fires → DB updates → Realtime pushes to all browsers.
+
+**Step 4 & 8 — flexible assignment:** Admin can assign any active staff member (supervisor or installer) at both the `paid` and `parts_paid` stages. No role restriction enforced.
+
+**Step 11 — feedback is admin-triggered and optional for the customer:** The feedback record is created when the ticket closes, but the WhatsApp link is only sent when admin clicks "Send Feedback Form" in the ticket detail. The customer is never compelled to respond.
 
 ---
 
@@ -326,7 +334,8 @@ Go to **Supabase → SQL Editor** and run these files one by one in order:
 3. `supabase/migrations/003_sla_settings.sql`
 4. `supabase/migrations/004_photo_upload.sql`
 5. `supabase/migrations/005_invoice_columns.sql`
-6. `supabase/set_admin_role.sql` (after creating your admin user — see Section 9.1)
+6. `supabase/migrations/006_site_visit_fields.sql`
+7. `supabase/set_admin_role.sql` (after creating your admin user — see Section 9.1)
 
 ### Step 4 — Create Supabase Storage buckets
 Go to **Supabase → Storage → New Bucket** and create:
@@ -580,14 +589,17 @@ Run in this order after setup:
 | 13 | Add supervisor via `/dashboard/staff` | Credentials card shown |
 | 14 | Open `/supervisor/verify` in incognito | OTP screen |
 | 15 | Enter supervisor mobile → receive SMS → enter OTP | Supervisor dashboard loads |
-| 16 | Admin assigns supervisor | Supervisor dashboard updates live |
-| 17 | Supervisor files report (sign both) | Ticket moves to "Raise Repair Invoice" |
-| 18 | Admin raises repair invoice | Second PDF generated |
-| 19 | Pay repair invoice | Ticket moves to "Assign Installer" |
-| 20 | Admin assigns installer | Installer notified |
-| 21 | Admin closes ticket | Feedback link created |
-| 22 | Open feedback link | Star rating form |
-| 23 | Submit feedback | Appears in admin Feedback tab |
+| 16 | Admin assigns field staff (try assigning an installer at `paid` stage) | AssignModal shows all staff; ticket advances to `scheduled` |
+| 17 | Supervisor/installer opens report form — try submitting without site photo | Blocked with error message |
+| 18 | Upload site photo → upload signoff document → sign both → submit | Ticket moves to "Raise Repair Invoice"; admin TicketDetail shows photo + signoff link |
+| 19 | Admin raises repair invoice | Second PDF generated |
+| 20 | Pay repair invoice | Ticket moves to "Assign Installer" |
+| 21 | Admin assigns field staff at `parts_paid` stage | Status stays `parts_paid`; assignment recorded |
+| 22 | Admin closes ticket | Ticket closes; NO feedback WhatsApp sent automatically |
+| 23 | In closed ticket detail — click "Send Feedback Form" | Customer receives WhatsApp with feedback link |
+| 24 | Open feedback link | Star rating form loads |
+| 25 | Submit feedback | Appears in admin Feedback tab; "Send Feedback Form" button hidden |
+| 26 | Click "📊 Analytics" chip in admin dashboard | Charts show: stage distribution, monthly volume, revenue split, rating distribution |
 
 ---
 
@@ -603,6 +615,7 @@ Run in this order after setup:
 | 6 | Notifications: WhatsApp (9 templates), Resend email, edge functions (4 cron jobs), SLA automation | ₹20,000 |
 | 7 | Staff management: onboarding UI, credentials card, performance stats, ratings, revenue tracking | ₹12,000 |
 | **Gap fixes** | Editable SLA settings, real photo upload (Supabase Storage), GST-compliant PDF invoices (pdf-lib) | Included |
+| **Enhancement v2** | Flexible staff assignment (any role, any stage) · Mandatory site photo + physical signoff upload · Admin-triggered feedback form · Analytics charts tab (stage distribution, monthly volume, revenue split, ratings) | Post-go-live |
 | **Total** | | **₹1,40,000 + GST** |
 
 ---

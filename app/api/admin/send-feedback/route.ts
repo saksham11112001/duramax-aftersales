@@ -20,29 +20,47 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (!ticket) return NextResponse.json({ error: 'Ticket not found' }, { status: 404 })
-    if (ticket.status !== 'parts_paid') {
-      return NextResponse.json({ error: 'Ticket must be in parts_paid to close' }, { status: 409 })
+    if (ticket.status !== 'closed') {
+      return NextResponse.json({ error: 'Ticket must be closed before sending feedback form' }, { status: 409 })
     }
 
-    const { data: feedbackRow } = await supabase
+    // Get or create feedback record
+    let { data: feedbackRow } = await supabase
       .from('feedback')
-      .insert({ ticket_id })
-      .select('token')
+      .select('token, token_used, submitted_at')
+      .eq('ticket_id', ticket_id)
       .single()
 
-    await supabase.from('tickets').update({ status: 'closed' }).eq('id', ticket_id)
+    if (!feedbackRow) {
+      const { data: newFb } = await supabase
+        .from('feedback')
+        .insert({ ticket_id })
+        .select('token, token_used, submitted_at')
+        .single()
+      feedbackRow = newFb
+    }
 
-    // Send closure notification WITHOUT feedback link — admin sends it separately via "Send Feedback Form"
+    if (!feedbackRow) {
+      return NextResponse.json({ error: 'Failed to create feedback record' }, { status: 500 })
+    }
+
+    if (feedbackRow.submitted_at) {
+      return NextResponse.json({ error: 'Feedback already submitted by customer' }, { status: 409 })
+    }
+
+    const feedbackUrl = `${process.env.NEXT_PUBLIC_APP_URL}/feedback/${feedbackRow.token}`
+
     await sendNotification('ticket_closed', {
       ticketId:     ticket_id,
       ticketNumber: ticket.ticket_number,
       clientName:   ticket.client_name,
       clientMobile: ticket.client_mobile,
+      feedbackUrl,
     })
 
-    return NextResponse.json({ success: true, feedback_token: feedbackRow?.token ?? null })
+    return NextResponse.json({ success: true, feedback_url: feedbackUrl })
   } catch (e) {
-    console.error('POST /api/admin/close-ticket error:', e)
+    console.error('POST /api/admin/send-feedback error:', e)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

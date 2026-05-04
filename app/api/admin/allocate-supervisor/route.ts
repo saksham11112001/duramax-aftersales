@@ -21,8 +21,8 @@ export async function POST(request: NextRequest) {
       .eq('id', ticket_id)
       .single()
     if (!ticket) return NextResponse.json({ error: 'Ticket not found' }, { status: 404 })
-    if (!['paid', 'scheduled'].includes(ticket.status)) {
-      return NextResponse.json({ error: 'Ticket must be in paid or scheduled status' }, { status: 409 })
+    if (!['paid', 'scheduled', 'parts_paid'].includes(ticket.status)) {
+      return NextResponse.json({ error: 'Ticket must be in paid, scheduled, or parts_paid status' }, { status: 409 })
     }
 
     const { data: supervisor } = await supabase
@@ -35,7 +35,10 @@ export async function POST(request: NextRequest) {
       visit_date, time_slot, notes: notes || null, sla_deadline: slaDeadline, sla_alerted: false,
     }, { onConflict: 'ticket_id' })
 
-    await supabase.from('tickets').update({ status: 'scheduled' }).eq('id', ticket_id)
+    // Only advance to 'scheduled' if currently in 'paid'; preserve 'parts_paid' status
+    if (ticket.status === 'paid') {
+      await supabase.from('tickets').update({ status: 'scheduled' }).eq('id', ticket_id)
+    }
 
     const visitDateFormatted = new Date(visit_date).toLocaleDateString('en-IN', {
       weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'
