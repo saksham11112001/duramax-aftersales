@@ -628,13 +628,18 @@ Run in this order after setup:
 | Supervisor OTP not working | `app/api/supervisor/send-otp/route.ts`, Supabase → Auth → Phone settings |
 | Payment not updating dashboard | `app/api/razorpay/webhook/route.ts`, Supabase → Realtime settings |
 | PDF not generating | `lib/invoice-generator.ts`, Supabase → Storage → invoices bucket exists? |
-| Photo not uploading | `app/api/tickets/upload-photo/route.ts`, Supabase → Storage → ticket-photos bucket exists? |
+| Customer photo not uploading | `app/api/tickets/upload-photo/route.ts`, Supabase → Storage → ticket-photos bucket exists? |
+| Site visit photo/signoff not uploading | `app/api/supervisor/upload-file/route.ts`, check `ticket-photos` bucket is Public |
+| Site visit report won't submit | `app/api/supervisor/submit-report/route.ts` — both `site_photo_url` and `signoff_photo_url` must be present |
+| Site photo not visible in admin | `components/admin/TicketDetail.tsx` — "Site Visit Evidence" section; check `site_visits.site_photo_url` in DB |
+| Feedback link not sending | `app/api/admin/send-feedback/route.ts`; feedback only sends when admin clicks "Send Feedback Form" |
 | WhatsApp not sending | `lib/notifications.ts`, check `notification_log` table in Supabase |
 | SLA breach not alerting | `supabase/functions/sla-checker/index.ts`, check cron is scheduled |
 | Realtime not updating | Supabase → Database → Replication → tickets table toggled ON? |
 | Staff not appearing in assign modal | Check `profiles.role` = 'supervisor' or 'installer', `profiles.is_active` = true |
 | "New User" showing in dashboard | Run `set_admin_role.sql` in Supabase SQL Editor |
+| Analytics tab showing no data | Data is computed from live tickets state — charts appear when tickets exist |
 
 ---
 
-*Last updated: April 2026 · All 7 phases complete + 3 gap fixes applied.*
+*Last updated: May 2026 · All 7 phases complete + 3 gap fixes + Enhancement v2 (flexible assignment, site evidence uploads, admin-triggered feedback, analytics charts).*

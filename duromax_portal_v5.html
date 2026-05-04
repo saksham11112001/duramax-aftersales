@@ -556,7 +556,7 @@ textarea{resize:vertical;min-height:68px;}
 ═══════════════════════════════════════ -->
 <div class="view" id="view-admin">
   <div class="pg-h">Admin Dashboard</div>
-  <div class="pg-s">Manage tickets · Raise invoices · Assign supervisor or installer · Send feedback · Track team</div>
+  <div class="pg-s">Manage tickets · Raise invoices · Assign any field staff to any ticket · Send feedback · Analytics</div>
   <div class="stats">
     <div class="sc"><div class="sc-n">14</div><div class="sc-l">Open Tickets</div><div class="sc-d" style="color:#16a34a;">↑ 3 new today</div></div>
     <div class="sc"><div class="sc-n">₹1.1L</div><div class="sc-l">Collected This Month</div><div class="sc-d" style="color:#16a34a;">↑ 18% vs last month</div></div>
@@ -567,11 +567,13 @@ textarea{resize:vertical;min-height:68px;}
     <div class="chip on" onclick="aChip(this,'all')">All (14)</div>
     <div class="chip" onclick="aChip(this,'new')">New — Invoice Pending (5)</div>
     <div class="chip" onclick="aChip(this,'invoiced')">Invoice Sent (3)</div>
-    <div class="chip" onclick="aChip(this,'scheduled')">Supervisor Assigned (3)</div>
+    <div class="chip" onclick="aChip(this,'scheduled')">Staff Assigned (3)</div>
     <div class="chip" onclick="aChip(this,'repair')">In Repair (2)</div>
     <div class="chip" onclick="aChip(this,'finalinv')">Final Invoice Pending (1)</div>
     <div class="chip" onclick="aChip(this,'closed')">Closed (42)</div>
+    <div class="chip" onclick="aChip(this,'analytics')">📊 Analytics</div>
   </div>
+  <div id="analytics-panel" style="display:none;"></div>
   <div class="two-col">
     <div class="tkt-list" id="adm-list"></div>
     <div id="adm-detail">
@@ -588,7 +590,7 @@ textarea{resize:vertical;min-height:68px;}
 ═══════════════════════════════════════ -->
 <div class="view" id="view-supervisor">
   <div class="pg-h">Supervisor Dashboard</div>
-  <div class="pg-s">View assigned site visits · Fill inspection report · Get customer &amp; supervisor sign-off</div>
+  <div class="pg-s">View assigned site visits · Upload mandatory site photo + signed form · Fill inspection report</div>
   <div class="stats" style="grid-template-columns:repeat(3,1fr);">
     <div class="sc"><div class="sc-n">3</div><div class="sc-l">Today's Visits</div></div>
     <div class="sc"><div class="sc-n">2</div><div class="sc-l">Reports Pending</div></div>
@@ -951,10 +953,132 @@ let selTkt=null;
 function aChip(el,f){
   document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
   el.classList.add('on');
+  const ap=document.getElementById('analytics-panel');
+  const tc=document.querySelector('.two-col');
+  if(f==='analytics'){
+    ap.style.display='block';
+    tc.style.display='none';
+    renderAnalytics();
+    return;
+  }
+  ap.style.display='none';
+  tc.style.display='';
   let list=TICKETS;
   if(f!=='all') list=TICKETS.filter(t=>t.status===f);
   renderAList(list);
   document.getElementById('adm-detail').innerHTML=`<div class="card" style="text-align:center;padding:50px 24px;color:var(--muted);"><div style="font-size:32px;margin-bottom:9px;">📋</div><div style="font-size:14px;font-weight:600;">Select a ticket</div></div>`;
+}
+
+function renderAnalytics(){
+  const stages=[
+    {l:'New / Invoice Pending',n:5,c:'#6366f1'},
+    {l:'Invoice Sent',n:3,c:'#f59e0b'},
+    {l:'Staff Assigned',n:3,c:'#0ea5e9'},
+    {l:'In Repair',n:2,c:'#8b5cf6'},
+    {l:'Final Invoice Pending',n:1,c:'#f97316'},
+    {l:'Closed',n:42,c:'#22c55e'},
+  ];
+  const maxS=Math.max(...stages.map(s=>s.n));
+  const months=[
+    {m:'Dec',n:8},{m:'Jan',n:11},{m:'Feb',n:9},{m:'Mar',n:14},{m:'Apr',n:17},{m:'May',n:12}
+  ];
+  const maxM=Math.max(...months.map(m=>m.n));
+  const ratings=[
+    {s:'5★',n:28,c:'#22c55e'},{s:'4★',n:11,c:'#84cc16'},{s:'3★',n:5,c:'#f59e0b'},
+    {s:'2★',n:2,c:'#f97316'},{s:'1★',n:1,c:'#ef4444'}
+  ];
+  const maxR=Math.max(...ratings.map(r=>r.n));
+
+  document.getElementById('analytics-panel').innerHTML=`
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px;">
+
+    <div class="card" style="padding:20px;">
+      <div style="font-weight:700;font-size:13px;margin-bottom:14px;color:var(--text);">Tickets by Stage</div>
+      ${stages.map(s=>`
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <div style="width:130px;font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.l}</div>
+          <div style="flex:1;background:#f1f5f9;border-radius:4px;height:14px;">
+            <div style="width:${Math.round(s.n/maxS*100)}%;background:${s.c};height:14px;border-radius:4px;"></div>
+          </div>
+          <div style="width:20px;font-size:11px;font-weight:700;color:${s.c};text-align:right;">${s.n}</div>
+        </div>`).join('')}
+    </div>
+
+    <div class="card" style="padding:20px;">
+      <div style="font-weight:700;font-size:13px;margin-bottom:14px;color:var(--text);">Monthly Volume (last 6 months)</div>
+      <div style="display:flex;align-items:flex-end;gap:8px;height:120px;">
+        ${months.map(m=>`
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+            <div style="font-size:10px;font-weight:700;color:#6366f1;">${m.n}</div>
+            <div style="width:100%;background:#6366f1;border-radius:4px 4px 0 0;height:${Math.round(m.n/maxM*80)}px;"></div>
+            <div style="font-size:10px;color:var(--muted);white-space:nowrap;">${m.m}</div>
+          </div>`).join('')}
+      </div>
+    </div>
+
+    <div class="card" style="padding:20px;">
+      <div style="font-weight:700;font-size:13px;margin-bottom:14px;color:var(--text);">Revenue Breakdown</div>
+      <div style="display:flex;gap:12px;margin-bottom:12px;">
+        <div style="flex:1;background:#f1f5f9;border-radius:6px;padding:12px;text-align:center;">
+          <div style="font-size:18px;font-weight:800;color:#6366f1;">₹68,500</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px;">Visit Charges</div>
+        </div>
+        <div style="flex:1;background:#f1f5f9;border-radius:6px;padding:12px;text-align:center;">
+          <div style="font-size:18px;font-weight:800;color:#22c55e;">₹2,41,000</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px;">Repair Charges</div>
+        </div>
+        <div style="flex:1;background:#f1f5f9;border-radius:6px;padding:12px;text-align:center;">
+          <div style="font-size:18px;font-weight:800;color:#f59e0b;">₹3,09,500</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px;">Total</div>
+        </div>
+      </div>
+      <div style="background:#f1f5f9;border-radius:4px;height:14px;overflow:hidden;">
+        <div style="display:flex;height:100%;">
+          <div style="width:22%;background:#6366f1;"></div>
+          <div style="width:78%;background:#22c55e;"></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:16px;margin-top:6px;">
+        <div style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--muted);"><div style="width:10px;height:10px;background:#6366f1;border-radius:2px;"></div>Visit 22%</div>
+        <div style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--muted);"><div style="width:10px;height:10px;background:#22c55e;border-radius:2px;"></div>Repair 78%</div>
+      </div>
+    </div>
+
+    <div class="card" style="padding:20px;">
+      <div style="font-weight:700;font-size:13px;margin-bottom:14px;color:var(--text);">Rating Distribution</div>
+      ${ratings.map(r=>`
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <div style="width:24px;font-size:11px;color:var(--muted);text-align:right;">${r.s}</div>
+          <div style="flex:1;background:#f1f5f9;border-radius:4px;height:14px;">
+            <div style="width:${Math.round(r.n/maxR*100)}%;background:${r.c};height:14px;border-radius:4px;"></div>
+          </div>
+          <div style="width:20px;font-size:11px;font-weight:700;color:${r.c};text-align:right;">${r.n}</div>
+        </div>`).join('')}
+      <div style="margin-top:10px;padding-top:10px;border-top:1px solid #f1f5f9;display:flex;gap:16px;">
+        <div style="font-size:11px;color:var(--muted);">Total responses: <strong>47</strong></div>
+        <div style="font-size:11px;color:var(--muted);">Avg: <strong style="color:#22c55e;">4.6★</strong></div>
+      </div>
+    </div>
+
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:0;">
+    <div class="card" style="padding:16px;text-align:center;">
+      <div style="font-size:26px;font-weight:800;color:#6366f1;">56</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:2px;">Total Tickets</div>
+    </div>
+    <div class="card" style="padding:16px;text-align:center;">
+      <div style="font-size:26px;font-weight:800;color:#f59e0b;">14</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:2px;">Open Tickets</div>
+    </div>
+    <div class="card" style="padding:16px;text-align:center;">
+      <div style="font-size:26px;font-weight:800;color:#22c55e;">42</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:2px;">Closed Tickets</div>
+    </div>
+    <div class="card" style="padding:16px;text-align:center;">
+      <div style="font-size:26px;font-weight:800;color:#0ea5e9;">47</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:2px;">Feedback Received</div>
+    </div>
+  </div>`;
 }
 
 function renderAList(list){
@@ -1030,7 +1154,7 @@ function renderADetail(){
   let acts='';
   if(t.status==='new') acts=`<button class="btn btn-gold btn-sm" onclick="openInvModal('Visit Site Invoice','3000')">🧾 Raise Invoice</button><button class="btn btn-outline btn-sm" onclick="toast('Reminder sent!')">Send Reminder</button>`;
   else if(t.status==='invoiced') acts=`<button class="btn btn-outline btn-sm" onclick="toast('Invoice resent via WhatsApp!')">Resend Invoice</button>`;
-  else if(t.status==='paid'||t.status==='scheduled') acts=`<button class="btn btn-teal btn-sm" onclick="document.getElementById('m-sup').classList.add('open')">👤 Assign Field Staff</button>`;
+  else if(t.status==='paid'||t.status==='scheduled') acts=`<button class="btn btn-teal btn-sm" onclick="document.getElementById('m-sup').classList.add('open')">🔧 Assign Field Staff</button><button class="btn btn-outline btn-sm" onclick="toast('Reassigned.')">Reassign</button>`;
   else if(t.status==='visited') acts=`<button class="btn btn-gold btn-sm" onclick="openInvModal('Spare Parts + Labour Invoice','2600')">🧾 Raise Parts Invoice</button>`;
   else if(t.status==='repair') acts=`<button class="btn btn-gold btn-sm" onclick="openInvModal('Final Invoice (Parts + Labour)','3068')">🧾 Raise Final Invoice</button>`;
   else if(t.status==='finalinv') acts=`<button class="btn btn-teal btn-sm" onclick="markClosed()">✅ Mark Closed</button>`;
@@ -1205,25 +1329,33 @@ function renderSDetail(){
 
       <div class="fg" style="margin-top:12px;margin-bottom:10px;"><label class="lbl">Additional Remarks</label><textarea placeholder="Any special notes for admin or installer…" style="min-height:52px;"></textarea></div>
 
-      <!-- SITE PHOTO UPLOAD -->
-      <div style="background:var(--blue-l);border:1px solid #B8D0F5;border-radius:10px;padding:13px 15px;margin:14px 0;">
-        <div style="font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--blue);margin-bottom:10px;">📷 Site Photos (Upload by Supervisor)</div>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px;" id="photo-preview-sup">
-          <div style="border:1.5px dashed #B8D0F5;border-radius:7px;height:70px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;background:#fff;font-size:11px;color:var(--blue);" onclick="simPhotoUpload('sup',0)">📷<br/>Before</div>
-          <div style="border:1.5px dashed #B8D0F5;border-radius:7px;height:70px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;background:#fff;font-size:11px;color:var(--blue);" onclick="simPhotoUpload('sup',1)">📷<br/>Issue Close-up</div>
-          <div style="border:1.5px dashed #B8D0F5;border-radius:7px;height:70px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;background:#fff;font-size:11px;color:var(--blue);" onclick="simPhotoUpload('sup',2)">📷<br/>+ Add More</div>
+      <!-- SITE PHOTO UPLOAD — MANDATORY -->
+      <div style="background:var(--blue-l);border:1.5px solid #90B8E8;border-radius:10px;padding:13px 15px;margin:14px 0;">
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:6px;">
+          <div style="font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--blue);">📷 Site Photo</div>
+          <span style="background:#FEE2E2;color:#DC2626;font-size:9px;font-weight:700;padding:1px 7px;border-radius:10px;letter-spacing:.04em;">REQUIRED</span>
         </div>
-        <div style="font-size:11px;color:var(--blue);opacity:.7;">Upload clear photos of the problem area. These will be visible to admin and the customer.</div>
+        <p style="font-size:11.5px;color:var(--blue);margin-bottom:10px;">Upload a photo at the site clearly showing the issue and/or the address board. This is mandatory proof of your physical presence.</p>
+        <div id="photo-preview-sup" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px;">
+          <div style="border:1.5px dashed #90B8E8;border-radius:7px;height:70px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;background:#fff;font-size:11px;color:var(--blue);" onclick="simPhotoUpload('sup',0)">📷<br/>Tap to upload</div>
+          <div style="border:1.5px dashed #B8D0F5;border-radius:7px;height:70px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;background:#fff;font-size:11px;color:var(--blue);opacity:.5;" onclick="simPhotoUpload('sup',1)">📷<br/>Add more</div>
+          <div style="border:1.5px dashed #B8D0F5;border-radius:7px;height:70px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;background:#fff;font-size:11px;color:var(--blue);opacity:.5;" onclick="simPhotoUpload('sup',2)">📷<br/>Add more</div>
+        </div>
+        <div id="site-photo-status-sup" style="display:none;padding:7px 11px;background:var(--blue-l);border:1px solid #90B8E8;border-radius:7px;font-size:12px;color:var(--blue);font-weight:700;margin-bottom:6px;">✅ Site photo uploaded</div>
+        <div style="font-size:11px;color:var(--blue);opacity:.7;">JPG, PNG, WEBP, HEIC · Max 10MB. Visible to admin.</div>
       </div>
 
-      <!-- PHYSICAL SIGN-OFF FORM UPLOAD -->
-      <div style="background:var(--teal-l);border:1px solid #A8DFC0;border-radius:10px;padding:13px 15px;margin:14px 0;">
-        <div style="font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--teal);margin-bottom:6px;">📝 Physical Sign-Off Form</div>
-        <p style="font-size:11.5px;color:var(--teal-d);margin-bottom:10px;">After completing the visit, get the customer's physical signature on the Duromax sign-off form. Then upload the signed form here.</p>
-        <div id="signoff-upload-box-sup" style="border:1.5px dashed #A8DFC0;border-radius:7px;padding:14px;text-align:center;cursor:pointer;background:#fff;" onclick="simSignoffUpload('sup')">
+      <!-- PHYSICAL SIGN-OFF FORM UPLOAD — MANDATORY -->
+      <div style="background:var(--teal-l);border:1.5px solid #6EC49A;border-radius:10px;padding:13px 15px;margin:14px 0;">
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:6px;">
+          <div style="font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--teal);">📄 Physical Sign-Off Form</div>
+          <span style="background:#FEE2E2;color:#DC2626;font-size:9px;font-weight:700;padding:1px 7px;border-radius:10px;letter-spacing:.04em;">REQUIRED</span>
+        </div>
+        <p style="font-size:11.5px;color:var(--teal-d);margin-bottom:10px;">Get the customer's physical signature on the Duromax sign-off form and upload a photo or scan of it here. Report cannot be submitted without this.</p>
+        <div id="signoff-upload-box-sup" style="border:1.5px dashed #6EC49A;border-radius:7px;padding:14px;text-align:center;cursor:pointer;background:#fff;" onclick="simSignoffUpload('sup')">
           <div style="font-size:22px;margin-bottom:4px;">📄</div>
           <div style="font-size:12px;font-weight:700;color:var(--teal);">Upload Signed Form</div>
-          <div style="font-size:10.5px;color:var(--muted);margin-top:2px;">JPG, PNG or PDF · Max 5MB</div>
+          <div style="font-size:10.5px;color:var(--muted);margin-top:2px;">JPG, PNG or PDF · Max 10MB</div>
         </div>
         <div id="signoff-status-sup" style="display:none;margin-top:8px;padding:8px 11px;background:var(--teal-l);border:1px solid var(--teal-m);border-radius:7px;font-size:12px;color:var(--teal);font-weight:700;">✅ Sign-off form uploaded successfully</div>
       </div>
@@ -1241,7 +1373,11 @@ function doSign(who){
   else{cSigned=true;const el=document.getElementById('c-sign');if(el){el.textContent='✅ Client Signed';el.classList.add('signed');}toast('Client signature captured.');}
 }
 function submitReport(){
+  if(!sitePhotoUploaded){toast('⚠️ Site photo is required before submitting.');return;}
+  const signoffStatus=document.getElementById('signoff-status-sup');
+  if(!signoffStatus||signoffStatus.style.display==='none'){toast('⚠️ Physical sign-off form must be uploaded before submitting.');return;}
   if(selVisit)selVisit.status='reported';
+  sitePhotoUploaded=false;
   renderSList();
   document.getElementById('sup-detail').innerHTML=`
     <div class="card" style="text-align:center;padding:36px 22px;">
@@ -1253,7 +1389,15 @@ function submitReport(){
   toast('Report submitted! Admin notified.');
 }
 
+let sitePhotoUploaded=false;
 function simPhotoUpload(role,idx){
+  if(idx===0){
+    sitePhotoUploaded=true;
+    const el=document.getElementById('site-photo-status-'+role);
+    if(el)el.style.display='block';
+    const boxes=document.getElementById('photo-preview-'+role);
+    if(boxes){const first=boxes.children[0];if(first){first.style.background='var(--teal-l)';first.style.borderColor='var(--teal)';first.style.color='var(--teal)';first.innerHTML='✅<br/>Uploaded';}}
+  }
   toast('📷 Photo '+(idx+1)+' uploaded successfully!');
 }
 function simSignoffUpload(role){
